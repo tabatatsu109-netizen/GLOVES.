@@ -1,0 +1,69 @@
+{
+  "_comment": "assets/js/teams.js と同じ内容です。将来 API / 管理画面へ移行する際の受け渡し用スキーマ。wholesalePrice は購入者画面には出しません。",
+  "product": {
+    "name": "OFFICIAL FIELD GLOVES",
+    "defaultWholesalePrice": 1600,
+    "sizes": [
+      { "id": "S", "height": 18,   "width": 8 },
+      { "id": "M", "height": 19,   "width": 8.5 },
+      { "id": "L", "height": 19.5, "width": 9 }
+    ]
+  },
+  "teams": {
+    "grande": {
+      "teamName": "GRANDE",
+      "teamNameJa": "グランデ",
+      "teamNote": "YATSUGATAKE FUTEBOL CLUBE 2001",
+      "productName": "OFFICIAL FIELD GLOVES",
+      "price": 2000,
+      "wholesalePrice": 1600,
+      "printType": "logo-number",
+      "status": "open",
+      "deadline": "2026-09-30"
+    },
+    "ala-serio": {
+      "teamName": "ALA SERIO",
+      "teamNameJa": "アラセリオ",
+      "teamNote": "MINAMI ALPS · SINCE 2019",
+      "productName": "OFFICIAL FIELD GLOVES",
+      "price": 2200,
+      "wholesalePrice": 1600,
+      "printType": "logo-number",
+      "status": "open",
+      "deadline": "2026-09-30"
+    },
+    "owl": {
+      "teamName": "OWL",
+      "teamNameJa": "アウル",
+      "teamNote": "OWL FOOTBALL CLUB",
+      "productName": "OFFICIAL FIELD GLOVES",
+      "price": 1900,
+      "wholesalePrice": 1600,
+      "printType": "name-number",
+      "status": "open",
+      "deadline": "2026-09-30"
+    },
+    "gyosei": {
+      "teamName": "GYOSEI",
+      "teamNameJa": "暁星インターナショナル",
+      "teamNote": "GYOSEI INTERNATIONAL",
+      "productName": "OFFICIAL FIELD GLOVES",
+      "price": 2000,
+      "wholesalePrice": 1600,
+      "printType": "logo-number",
+      "status": "open",
+      "deadline": "2026-09-30"
+    },
+    "sample-fc": {
+      "teamName": "SAMPLE FC",
+      "teamNameJa": "サンプルFC",
+      "teamNote": "DEMO TEAM STORE",
+      "productName": "OFFICIAL FIELD GLOVES",
+      "price": 2200,
+      "wholesalePrice": 1600,
+      "printType": "name-number",
+      "status": "open",
+      "deadline": "2026-09-30"
+    }
+  }
+}

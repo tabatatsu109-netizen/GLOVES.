@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages
+# /team/<slug> をチーム専用販売ページへ内部書き換え
+/team/*   /team.html   200

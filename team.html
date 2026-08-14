@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<script>
+/* /team/<slug> のような pretty URL でも相対パスの資産を解決できるようにする。
+   （必ず他のタグより先に実行すること） */
+(function () {
+  var m = location.pathname.match(/^(.*?)\/team\/[^\/?#]+\/?$/i);
+  if (m) {
+    var b = document.createElement("base");
+    b.href = (m[1] || "") + "/";
+    document.head.appendChild(b);
+  }
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TEAM STORE ｜ NO FOOTBALL</title>
+<meta name="description" content="チーム専用のオリジナルフィールドグローブ注文ページ。">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OFFICIAL TEAM GLOVES — NO FOOTBALL">
+<meta property="og:image" content="assets/images/glove-grande.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/team.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='16' font-weight='900' fill='%23D8FF00' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+</head>
+<body class="t-dark team-body">
+
+<!-- ======================================================= HEADER ======= -->
+<header class="site-header is-stuck team-header" id="siteHeader">
+  <div class="site-header__in">
+    <a href="index.html" class="logo">NO FOOTBALL<small>NOF</small></a>
+    <span class="team-header__name" id="hdTeamName"></span>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- =================================================== NOT FOUND ====== -->
+  <section class="view view--center" id="viewNotFound" hidden>
+    <div class="wrap stack-24">
+      <p class="kicker">TEAM STORE</p>
+      <h1 class="display display--m">Team<br>not found.</h1>
+      <p class="lead">お探しのチームページが見つかりませんでした。<br>チーム代表者から届いたURLをご確認ください。</p>
+      <div class="stack-16">
+        <p class="kicker kicker--plain">DEMO TEAM PAGES</p>
+        <ul class="team-links__list" id="nfTeamLinks"></ul>
+      </div>
+      <p><a href="index.html" class="btn btn--ghost">NO FOOTBALL について<span class="btn__arrow">→</span></a></p>
+    </div>
+  </section>
+
+  <!-- ================================================== STORE / ORDER === -->
+  <section class="view" id="viewStore" hidden>
+
+    <!-- ---------------------------------------------------- team hero --- -->
+    <div class="thero">
+      <div class="wrap thero__in">
+        <div class="thero__id">
+          <div class="thero__logo" id="teamLogo" hidden></div>
+          <div class="thero__idtext">
+            <p class="kicker" id="teamKicker">OFFICIAL TEAM STORE</p>
+            <h1 class="display display--l thero__name" id="teamName"></h1>
+            <p class="thero__product" id="teamProduct"></p>
+          </div>
+        </div>
+
+        <div class="thero__media">
+          <div class="thero__main fig" id="heroFig">
+            <img id="heroImg" src="" alt="">
+          </div>
+          <ul class="thero__thumbs" id="heroThumbs"></ul>
+        </div>
+
+        <div class="thero__meta">
+          <div class="price">
+            <span class="price__value" id="teamPrice"></span>
+            <span class="price__tax">税込 / 1双</span>
+          </div>
+          <p class="thero__desc" id="teamDesc"></p>
+          <ul class="thero__spec">
+            <li id="teamClubRow" hidden><span>CLUB</span><em id="teamClub"></em></li>
+            <li><span>PRINT</span><em id="teamPrint"></em></li>
+            <li><span>GRIP</span><em>手のひら側 滑り止め加工</em></li>
+            <li><span>SIZE</span><em>S / M / L</em></li>
+            <li><span>DEADLINE</span><em id="teamDeadline">—</em></li>
+          </ul>
+          <a href="#order" class="btn btn--acc btn--full" data-goto-order>注文する<span class="btn__arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------- order --- -->
+    <div class="wrap order" id="order">
+
+      <div class="order__grid">
+
+        <!-- preview (sticky on desktop) -->
+        <aside class="preview-col">
+          <div class="preview-box">
+            <div class="preview-box__head">
+              <p class="kicker kicker--plain">PREVIEW</p>
+              <span class="pv__badge" id="pvBadge">PLAYER 01</span>
+            </div>
+            <div class="pv" id="pv">
+              <svg class="pv__glove" viewBox="0 0 320 500" aria-hidden="true">
+                <defs>
+                  <linearGradient id="gGlove" gradientUnits="userSpaceOnUse" x1="70" y1="60" x2="280" y2="470">
+                    <stop offset="0"    stop-color="#2A2A2A"/>
+                    <stop offset="0.45" stop-color="#171717"/>
+                    <stop offset="1"    stop-color="#070707"/>
+                  </linearGradient>
+                  <linearGradient id="gCuff" gradientUnits="userSpaceOnUse" x1="84" y1="386" x2="252" y2="492">
+                    <stop offset="0" stop-color="#1F1F1F"/>
+                    <stop offset="1" stop-color="#0A0A0A"/>
+                  </linearGradient>
+                </defs>
+                <g fill="url(#gGlove)">
+                  <rect x="58"  y="252" width="44"  height="120" rx="22" transform="rotate(-24 100 368)"/>
+                  <rect x="82"  y="88"  width="38"  height="150" rx="19"/>
+                  <rect x="127" y="68"  width="38"  height="170" rx="19"/>
+                  <rect x="172" y="82"  width="38"  height="156" rx="19"/>
+                  <rect x="217" y="116" width="38"  height="122" rx="19"/>
+                  <rect x="78"  y="190" width="180" height="220" rx="42"/>
+                  <rect x="78"  y="330" width="180" height="80"/>
+                </g>
+                <rect x="78" y="386" width="180" height="102" rx="10" fill="url(#gCuff)"/>
+                <path d="M78 392h180" stroke="rgba(255,255,255,.05)" stroke-width="2"/>
+              </svg>
+
+              <div class="pv__print" id="pvPrint">
+                <div class="pv__logo fig" id="pvLogo" hidden><img src="" alt=""></div>
+                <span class="pv__name" id="pvName"></span>
+              </div>
+              <span class="pv__num" id="pvNum">10</span>
+            </div>
+            <p class="note pv__note">※ 仕上がりの雰囲気を確認するための簡易イメージです。<br>実際のプリント位置・書体は製作時に調整します。</p>
+          </div>
+        </aside>
+
+        <!-- form -->
+        <div class="form-col">
+          <form id="orderForm" novalidate>
+
+            <section class="block">
+              <header class="block__head">
+                <p class="kicker">ORDER</p>
+                <h2 class="display display--s">Players.</h2>
+                <p class="note">選手ごとに、お名前・背番号・サイズ・数量を入力してください。</p>
+              </header>
+
+              <div id="players"></div>
+
+              <button type="button" class="add-player" id="addPlayer">
+                <span class="add-player__plus">＋</span>もう1人追加
+              </button>
+            </section>
+
+            <section class="block">
+              <header class="block__head">
+                <p class="kicker">CONTACT</p>
+                <h2 class="display display--s">Your info.</h2>
+                <p class="note">ご注文内容の確認のためにご連絡することがあります。</p>
+              </header>
+
+              <div class="fields">
+                <label class="field">
+                  <span class="field__label">注文者名 <i>必須</i></span>
+                  <input type="text" name="customerName" autocomplete="name" placeholder="山田 花子" required>
+                  <span class="field__error" data-error></span>
+                </label>
+                <label class="field">
+                  <span class="field__label">メールアドレス <i>必須</i></span>
+                  <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="example@mail.com" required>
+                  <span class="field__error" data-error></span>
+                </label>
+                <label class="field">
+                  <span class="field__label">電話番号 <i>必須</i></span>
+                  <input type="tel" name="tel" autocomplete="tel" inputmode="tel" placeholder="090-0000-0000" required>
+                  <span class="field__error" data-error></span>
+                </label>
+              </div>
+
+              <div class="delivery">
+                <span class="field__label">お受け取り方法</span>
+                <div class="choice" id="deliveryChoice"></div>
+                <p class="note" id="deliveryNote"></p>
+                <label class="field field--hidden" id="addressField">
+                  <span class="field__label">お届け先住所</span>
+                  <textarea name="address" rows="2" placeholder="〒000-0000 都道府県市区町村…"></textarea>
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field__label">備考 <i class="is-opt">任意</i></span>
+                <textarea name="note" rows="2" placeholder="ご要望があればご記入ください"></textarea>
+              </label>
+            </section>
+
+            <section class="block">
+              <div class="summary" id="summary"></div>
+              <p class="form-error" id="formError" hidden></p>
+              <button type="submit" class="btn btn--acc btn--lg btn--full" id="submitBtn">
+                注文内容を確認する<span class="btn__arrow">→</span>
+              </button>
+              <p class="note" style="margin-top:14px">※ この画面では決済は行われません。内容確認後、チーム代表者・NOFよりご案内します。</p>
+            </section>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== CONFIRM ======== -->
+  <section class="view" id="viewConfirm" hidden>
+    <div class="wrap confirm">
+      <p class="kicker">STEP 02 / CONFIRM</p>
+      <h1 class="display display--jp">注文内容の<br>確認</h1>
+      <p class="confirm__team" id="cfTeam"></p>
+
+      <div class="confirm__body" id="cfBody"></div>
+
+      <div class="confirm__actions">
+        <button type="button" class="btn btn--ghost btn--lg" id="backToForm">修正する</button>
+        <button type="button" class="btn btn--acc btn--lg" id="placeOrder">この内容で注文する<span class="btn__arrow">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== COMPLETE ======= -->
+  <section class="view" id="viewDone" hidden>
+    <div class="wrap done">
+      <p class="kicker">STEP 03 / COMPLETE</p>
+      <h1 class="display display--xl done__title">Thank<br>you.</h1>
+      <p class="lead">ご注文ありがとうございます。<br>注文内容を受け付けました。</p>
+
+      <dl class="done__meta" id="doneMeta"></dl>
+      <div class="done__body" id="doneBody"></div>
+
+      <p class="note">※ お支払い方法・お渡し方法については、チーム代表者またはNOFよりご案内します。</p>
+      <div class="done__actions">
+        <a href="index.html" class="btn btn--ghost btn--lg">NO FOOTBALL について<span class="btn__arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================================================== STICKY CTA ====== -->
+<div class="stickybar" id="stickybar" hidden>
+  <div class="stickybar__in">
+    <div class="stickybar__total">
+      <span class="stickybar__label">合計</span>
+      <span class="stickybar__value" id="stickyTotal">¥0</span>
+    </div>
+    <button type="button" class="btn btn--acc stickybar__btn" id="stickyBtn">注文する<span class="btn__arrow">→</span></button>
+  </div>
+</div>
+
+<footer class="site-footer team-footer">
+  <div class="wrap">
+    <div class="site-footer__bottom">
+      <span>© NO FOOTBALL — OFFICIAL FIELD GLOVES</span>
+      <span><a href="index.html">ABOUT NOF</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/teams.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/sizeguide.js"></script>
+<script src="assets/js/team.js"></script>
+</body>
+</html>

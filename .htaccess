@@ -1,0 +1,6 @@
+# Apache（さくら・エックスサーバー等）
+# /team/<slug> をチーム専用販売ページへ内部書き換え
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^team/([A-Za-z0-9_-]+)/?$ /team.html [L]
+</IfModule>
