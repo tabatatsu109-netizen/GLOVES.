@@ -9,11 +9,10 @@
 /zona.jpg
 /*.png
 /*.pdf
-/オリジナルプリント/
 
 # 開発用の一時ファイル（動作確認ハーネス）
 /_verify.html
-/_probe.html
+/_probe*.html
 
 # OS
 Thumbs.db
