@@ -54,7 +54,9 @@
 
 /* ----------------------------------------------------------- controls -- */
 .ds-block { margin-bottom: 26px; }
-.ds-block.is-off { opacity: .35; pointer-events: none; }
+/* 使わない項目は JS 側で disabled も付ける（キーボード操作を塞ぐため） */
+.ds-block.is-off, .ds-field.is-off { opacity: .35; }
+.ds-block.is-off *, .ds-field.is-off * { cursor: default; }
 .ds-label {
   display: block;
   font-size: 10.5px;

@@ -32,7 +32,8 @@
     var qs = q.get("team") || q.get("t");
     if (qs) return qs.toLowerCase();
 
-    var h = location.hash.match(/^#\/?([\w-]+)/);
+    // スラッシュ必須。#confirm のような画面用ハッシュを slug と誤認しないため。
+    var h = location.hash.match(/^#\/([\w-]+)/);
     if (h) return h[1].toLowerCase();
 
     return null;
@@ -40,11 +41,18 @@
 
   /**
    * チーム設定の取得。将来 API 化する場合はここだけ差し替えれば済みます。
+   * 設定本体は書き換えず、コピーを返します。
    */
   function getTeam(slug) {
     if (!slug) return null;
-    var t = TEAMS[slug] || null;
-    if (!t) return null;
+    // hasOwnProperty で判定しないと "__proto__" や "constructor" が
+    // チームとして取れてしまい、設定を壊したうえ画面が落ちる。
+    if (!Object.prototype.hasOwnProperty.call(TEAMS, slug)) return null;
+    var src = TEAMS[slug];
+    if (!src || typeof src !== "object") return null;
+
+    var t = {};
+    for (var k in src) if (Object.prototype.hasOwnProperty.call(src, k)) t[k] = src[k];
     // 卸価格が未設定なら共通の既定値を使う
     if (t.wholesalePrice == null) {
       t.wholesalePrice = (CONFIG.product && CONFIG.product.defaultWholesalePrice) || 0;
@@ -119,22 +127,38 @@
    */
   function submitOrder(payload) {
     if (CONFIG.orderEndpoint) {
+      var ctrl = ("AbortController" in window) ? new AbortController() : null;
+      var timer = ctrl && setTimeout(function () { ctrl.abort(); }, 15000);
       return fetch(CONFIG.orderEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: ctrl ? ctrl.signal : undefined
       }).then(function (res) {
+        if (timer) clearTimeout(timer);
         if (!res.ok) throw new Error("Order failed: " + res.status);
-        return res.json();
+        // 200 で本文が空／JSON でない場合も成功として扱う
+        return res.text().then(function (t) {
+          try { return JSON.parse(t); } catch (e) { return { raw: t }; }
+        });
+      }, function (err) {
+        if (timer) clearTimeout(timer);
+        throw err;
       });
     }
-    return new Promise(function (resolve) {
+
+    // デモモード: ブラウザ内に保存する。保存できなければ「注文できた」と
+    // 誤解させないよう失敗として扱う。
+    return new Promise(function (resolve, reject) {
+      var key = "nof.orders";
       try {
-        var key = "nof.orders";
         var store = JSON.parse(localStorage.getItem(key) || "[]");
         store.push(payload);
         localStorage.setItem(key, JSON.stringify(store));
-      } catch (e) { /* localStorage 不可でも注文完了は妨げない */ }
+      } catch (e) {
+        reject(new Error("注文内容を保存できませんでした: " + e.message));
+        return;
+      }
       setTimeout(function () { resolve(payload); }, 450);
     });
   }

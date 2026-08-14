@@ -85,6 +85,7 @@
     scales: $("#dsScales"),
     numberField: $("#dsNumberField"),
     textField:   $("#dsTextField"),
+    fontBlock:    $("#dsFontBlock"),
     numFontBlock: $("#dsNumFontBlock"),
     save:   $("#dsSave"),
     status: $("#dsStatus")
@@ -148,21 +149,33 @@
   }
 
   /* ---------------------------------------------------------- 反映 --- */
+
+  /** 使わない項目を無効化する。disabled にしないとキーボードで操作できてしまう。 */
+  function setOff(el, off) {
+    if (!el) return;
+    el.classList.toggle("is-off", off);
+    Array.prototype.forEach.call(el.querySelectorAll("input, button, textarea, select"),
+      function (c) { c.disabled = off; });
+  }
+
   function fit(el, maxRatio, basePx) {
-    el.style.fontSize = basePx + "px";
     var maxW = els.stage.clientWidth * maxRatio;
+    if (!(maxW > 0)) return;          // ステージ未表示時に 0px にしてしまわない
+    el.style.fontSize = basePx + "px";
     var w = el.scrollWidth;
     if (w > maxW && w > 0) el.style.fontSize = (basePx * (maxW / w)) + "px";
   }
 
   function apply() {
-    var stageW = els.stage.clientWidth || 1;
+    var stageW = els.stage.clientWidth;
+    if (!stageW) return;              // 幅が取れるまで待つ（ResizeObserver が再実行する）
 
     els.name.hidden = !state.layout.name;
     els.num.hidden = !state.layout.number;
-    els.textField.classList.toggle("is-off", !state.layout.name);
-    els.numberField.classList.toggle("is-off", !state.layout.number);
-    els.numFontBlock.classList.toggle("is-off", !state.layout.number);
+    setOff(els.textField, !state.layout.name);
+    setOff(els.numberField, !state.layout.number);
+    setOff(els.numFontBlock, !state.layout.number);
+    setOff(els.fontBlock, !state.layout.name);
 
     var f = state.font;
     var text = (state.text.trim() || "TEAM").toUpperCase();
@@ -189,10 +202,15 @@
     els.status.textContent = "画像を作成中…";
     els.save.disabled = true;
 
+    function fail(msg) {
+      els.status.textContent = msg || "画像の作成に失敗しました。";
+      els.save.disabled = false;
+    }
+
     var img = new Image();
     img.onload = function () {
       var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-      ready.then(function () {
+      ready.catch(function () { /* フォント読込失敗でも書き出しは進める */ }).then(function () {
         var scale = 2;
         var W = img.naturalWidth * scale, H = img.naturalHeight * scale;
         var cv = document.createElement("canvas");
@@ -231,6 +249,7 @@
         if (state.layout.number) draw(state.number.trim(), POS.number, state.scale.number, state.numberFont);
 
         cv.toBlob(function (blob) {
+          if (!blob) { fail("画像の作成に失敗しました。"); return; }
           var url = URL.createObjectURL(blob);
           var a = document.createElement("a");
           var safe = (state.text.trim() || "team").replace(/[^\w\-]+/g, "_").slice(0, 24);
@@ -243,12 +262,9 @@
           els.status.textContent = "画像を保存しました。NOF担当者へお送りください。";
           els.save.disabled = false;
         }, "image/png");
-      });
+      }).catch(function () { fail(); });
     };
-    img.onerror = function () {
-      els.status.textContent = "画像の作成に失敗しました。";
-      els.save.disabled = false;
-    };
+    img.onerror = function () { fail("手袋画像を読み込めませんでした。"); };
     img.src = GLOVE_SRC;
   }
 
@@ -281,7 +297,13 @@
 
     els.text.addEventListener("focus", loadFonts);
     els.save.addEventListener("click", download);
-    window.addEventListener("resize", apply);
+
+    // 画像の遅延読込などでステージ幅が 0 → 実寸 に変わったときに描き直す
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(function () { apply(); }).observe(els.stage);
+    } else {
+      window.addEventListener("resize", apply);
+    }
     window.addEventListener("load", function () { loadFonts(); apply(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
   }

@@ -187,6 +187,7 @@
           '<button type="button" class="qty__btn" data-qty="1" aria-label="数量を増やす">＋</button>' +
         '</div>' +
         '<span class="player__sub" data-sub></span>' +
+        '<span class="field__error" data-error></span>' +
       '</div>' +
     '</article>';
   }
@@ -245,7 +246,9 @@
 
   function setError(input, msg) {
     input.classList.add("is-invalid");
-    var box = input.parentElement.querySelector("[data-error]");
+    // .field（ラベル包み）でも .picker（数量など）でもエラー欄を見つけられるように
+    var scope = input.closest(".field, .picker") || input.parentElement;
+    var box = scope.querySelector("[data-error]");
     if (box) box.textContent = msg;
   }
 
@@ -260,7 +263,11 @@
       var numEl  = $('[data-f="number"]', el);
       if (!p.name.trim()) { setError(nameEl, "選手名を入力してください"); firstBad = firstBad || nameEl; }
       if (!/^\d{1,3}$/.test(String(p.number))) { setError(numEl, "背番号を数字で入力してください"); firstBad = firstBad || numEl; }
-      if (!(Number(p.qty) >= 1)) { firstBad = firstBad || $('[data-f="qty"]', el); }
+      if (!(Number(p.qty) >= 1)) {
+        var qtyEl = $('[data-f="qty"]', el);
+        setError(qtyEl, "数量は1以上で入力してください");
+        firstBad = firstBad || qtyEl;
+      }
     });
 
     var c = state.customer;
@@ -284,12 +291,25 @@
   /* ------------------------------------------------------------ views --- */
   var VIEWS = { store: "#viewStore", confirm: "#viewConfirm", done: "#viewDone" };
 
+  function resetPlaceOrder() {
+    var b = $("#placeOrder");
+    b.disabled = false;
+    b.innerHTML = 'この内容で注文する<span class="btn__arrow">→</span>';
+  }
+
+  /**
+   * 画面の切り替えはすべてここを通す。
+   * 確認画面に入る経路（送信ボタン / ブラウザの進む・戻る）で
+   * 表示内容とボタン状態が食い違わないよう、描画もここで行う。
+   * URL は書き換えない（#confirm のような値が slug と衝突するため）。
+   */
   function showView(name, push) {
+    if (name === "confirm") { renderConfirm(); resetPlaceOrder(); }
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = k !== name; });
     $("#stickybar").hidden = name !== "store";
     document.body.classList.toggle("has-stickybar", name === "store");
     window.scrollTo({ top: 0, behavior: "auto" });
-    if (push) history.pushState({ view: name }, "", location.pathname + location.search + (name === "store" ? "" : "#" + name));
+    if (push) history.pushState({ view: name }, "");
   }
 
   window.addEventListener("popstate", function (e) {
@@ -405,8 +425,10 @@
         el.value = el.value.replace(/[^\d]/g, "").slice(0, 3);
         p.number = el.value;
       } else if (f === "qty") {
+        // 入力中は丸めない。丸めると「0」と打ったとき表示0・内部1でズレる。
+        // 1以上への確定は blur で行う。
         el.value = el.value.replace(/[^\d]/g, "").slice(0, 2);
-        p.qty = el.value === "" ? "" : Math.max(1, Number(el.value));
+        p.qty = el.value === "" ? "" : Number(el.value);
       } else {
         p[f] = el.value;
       }
@@ -428,7 +450,17 @@
       var el = e.target.closest('[data-f="qty"]');
       if (!el) return;
       var p = getPlayer(Number(el.closest("[data-id]").dataset.id));
-      if (!(Number(p.qty) >= 1)) { p.qty = 1; el.value = 1; updateSubtotals(); renderSummary(); }
+      if (!p) return;
+      // 空欄・0 はここで 1 に確定する
+      if (!(Number(p.qty) >= 1)) {
+        p.qty = 1;
+        el.value = "1";
+        el.classList.remove("is-invalid");
+        var box = (el.closest(".picker") || el.parentElement).querySelector("[data-error]");
+        if (box) box.textContent = "";
+        updateSubtotals();
+        renderSummary();
+      }
     }, true);
 
     // サイズ / 数量 / 削除
@@ -498,11 +530,10 @@
       renderDelivery();
     });
 
-    // 確認へ
+    // 確認へ（描画とボタン状態のリセットは showView が行う）
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!validate()) return;
-      renderConfirm();
       showView("confirm", true);
     });
 
@@ -522,17 +553,21 @@
 
     $("#placeOrder").addEventListener("click", function () {
       var btn = this;
+      if (btn.disabled) return;
       btn.disabled = true;
       btn.textContent = "送信中…";
+      var err = $("#orderError");
+      err.hidden = true;
       var payload = buildPayload();
       NOF.submitOrder(payload).then(function () {
-        state.order = payload;
         renderDone(payload);
         showView("done", true);
-      }).catch(function () {
-        btn.disabled = false;
-        btn.textContent = "この内容で注文する";
-        alert("送信に失敗しました。時間をおいて再度お試しください。");
+      }).catch(function (e) {
+        resetPlaceOrder();
+        err.hidden = false;
+        err.textContent = "送信できませんでした。" +
+          "お手数ですが時間をおいて再度お試しください。（" + (e && e.message ? e.message : "不明なエラー") + "）";
+        err.focus();
       });
     });
   }
