@@ -138,7 +138,7 @@ vercel.json             Vercel 用 rewrite
 | `photo-gyosei.jpg` | 実物写真（GYOSEI INTERNATIONAL） |
 | `size-s / m / l.jpg` | サイズ画像 |
 | `size-chart.jpg` | サイズ比較（4分割） |
-| `glove-blank.jpg` | 無地の甲側（デザインシミュレーターの土台） |
+| `glove-blank.png` | 無地の甲側・背景透過（デザインシミュレーターの土台） |
 
 `assets/images/` の画像は、ご提供いただいた原本（プロジェクト直下の
 `グランデ.png` `アラセリオ様.png` `アウル様手袋完成イメージ.png` `デザイン5.png` 等）を
@@ -155,29 +155,34 @@ LP の CUSTOM DESIGN セクション内（`#designer`、ナビの **DESIGN**）�
 | 項目 | 内容 |
 |---|---|
 | プリント内容 | チーム名＋背番号 / チーム名のみ / 背番号のみ |
-| チーム名 | 16文字まで（欧文フォント選択時は自動で大文字に） |
-| フォント | 9種（下記） |
-| プリント色 | ホワイト / イエロー / ライム |
+| チーム名 | 16文字まで（自動で大文字に） |
+| チーム名のフォント | 9種（下記） |
+| 背番号のフォント | 4種（BLOCK / CONDENSED / SQUARE / SPEED）から選択 |
+| プリント色 | ホワイトのみ |
 | 大きさ | S / M / L |
 
 長いチーム名はプリント範囲に収まるよう自動で縮小されます。
 
 ### 用意しているフォント
 
-| 表示 | 書体 | 用途イメージ |
-|---|---|---|
-| BLOCK | Anton | 太い定番 |
-| CONDENSED | Bebas Neue | 縦長・ユニフォーム系 |
-| GOTHIC | Archivo Black | 太ゴシック |
-| SQUARE | Teko | 角ばった書体 |
-| COLLEGE | Graduate | カレッジ・大学スポーツ系 |
-| SLAB | Alfa Slab One | 極太スラブ |
-| STENCIL | Saira Stencil One | ステンシル |
-| SPEED | Racing Sans One | イタリック・スピード感 |
-| 日本語 | Noto Sans JP 900 | 日本語チーム名用 |
+プリントは**カッティング（切り文字）**のため、線が細い書体・
+ステンシル・装飾の多い書体は入れていません。すべて塗りが太く単純な書体です。
+
+| 表示 | 書体 | 用途イメージ | 背番号 |
+|---|---|---|---|
+| BLOCK | Anton | 太い定番 | ○ |
+| CONDENSED | Bebas Neue | 縦長・ユニフォーム系 | ○ |
+| GOTHIC | Archivo Black | 太ゴシック | |
+| SQUARE | Teko | 角ばった書体 | ○ |
+| TECH | Russo One | スクエア系・メカニカル | |
+| COLLEGE | Graduate | カレッジ・大学スポーツ系 | |
+| SLAB | Alfa Slab One | 極太スラブ | |
+| HEAVY | Bowlby One | 極太ブロック | |
+| SPEED | Racing Sans One | イタリック・スピード感 | ○ |
 
 フォントを増やすときは `assets/js/designer.js` の `FONTS` に1行足し、
 同ファイル内 `loadFonts()` の Google Fonts URL にファミリーを追記します。
+背番号にも使えるようにする場合は `NUMBER_FONT_IDS` に id を追加します。
 
 ### プリント位置の調整
 
@@ -185,13 +190,13 @@ LP の CUSTOM DESIGN セクション内（`#designer`、ナビの **DESIGN**）�
 
 ```js
 var POS = {
-  name:   { x: 0.43, y: 0.485, maxW: 0.46 },  // 甲のチーム名
-  number: { x: 0.40, y: 0.805, maxW: 0.26 }   // カフの背番号
+  name:   { x: 0.510, y: 0.535, maxW: 0.45 },  // 甲のチーム名
+  number: { x: 0.520, y: 0.855, maxW: 0.27 }   // カフの背番号
 };
 ```
 
-土台の画像は `assets/images/glove-blank.jpg`（無地の甲側）です。
-これはサイズ画像 `size-m.jpg` から採寸用の赤い矢印を除去して作成したものです。
+土台の画像は `assets/images/glove-blank.png`（無地の甲側・**背景透過**）です。
+サイズ画像 `size-m.jpg` から採寸用の赤い矢印を除去し、背景を切り抜いて作成しました。
 実写の無地グローブ写真をご用意いただければ差し替え可能で、
 その場合は `POS` の値だけ合わせ直してください。
 
@@ -208,7 +213,7 @@ var POS = {
 - 「＋もう1人追加」による複数選手注文
 - 注文者情報・お受け取り方法（チームまとめ配送 / 個人配送）
 - 入力チェック → 注文確認画面 → 注文完了画面（注文番号発行）
-- デザインシミュレーター（フォント選択・その場でイメージ作成・PNG保存）
+- デザインシミュレーター（チーム名／背番号のフォント選択・その場でイメージ作成・PNG保存）
 
 決済は含みません。注文内容は下記に保存されます。
 

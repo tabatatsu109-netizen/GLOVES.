@@ -18,19 +18,28 @@
 }
 
 /* ------------------------------------------------------------ preview -- */
-.dz-wrap { background: #0C0C0C; border: 1px solid var(--line-dark); padding: 14px; }
+.dz-wrap {
+  border: 1px solid var(--line-dark);
+  padding: 18px;
+  background: radial-gradient(72% 54% at 50% 40%, #3A3A3A 0%, #1A1A1A 60%, #0D0D0D 100%);
+}
 .dz {
   position: relative;
-  aspect-ratio: 410 / 840;
-  width: min(340px, 100%);
+  aspect-ratio: 354 / 723;
+  width: min(320px, 100%);
   margin-inline: auto;
   container-type: inline-size;
 }
-.dz > img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.dz > img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .55));
+}
 
 /* モバイルは操作パネルが見えるよう高さを抑える */
 @media (max-width: 899px) {
-  .dz { width: auto; height: min(50svh, 480px); margin-inline: auto; }
+  .dz { width: auto; height: min(50svh, 470px); margin-inline: auto; }
 }
 .dz__name, .dz__num {
   position: absolute;
@@ -90,7 +99,8 @@
 
 /* font picker */
 .ds-fonts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-@media (min-width: 620px) { .ds-fonts { grid-template-columns: repeat(3, 1fr); } }
+.ds-fonts--4 { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 620px) { .ds-fonts--4 { grid-template-columns: repeat(4, 1fr); } }
 .ds-font {
   display: grid;
   gap: 6px;

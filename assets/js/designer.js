@@ -1,7 +1,10 @@
 /* ==========================================================================
    NOF — DESIGN SIMULATOR
-   チーム名・背番号・フォント・色を選んで、その場で完成イメージをつくる。
+   チーム名・背番号・フォントを選んで、その場で完成イメージをつくる。
    画像（PNG）として保存できます。
+   --------------------------------------------------------------------------
+   ※ プリントはカッティング（切り文字）のため、書体は「線が太く・単純で・
+      細かいディテールが無いもの」だけを用意しています。
    ========================================================================== */
 (function () {
   "use strict";
@@ -14,24 +17,25 @@
 
   /* ------------------------------------------------------------- 設定 --- */
 
-  /* プリントに使えるフォント。追加するときはここに1行足すだけです。 */
+  /* チーム名に使えるフォント。追加するときはここに1行足し、
+     loadFonts() の URL にもファミリー名を追記します。 */
   var FONTS = [
-    { id: "anton",    label: "BLOCK",     family: "Anton",            stack: "'Anton', sans-serif" },
-    { id: "bebas",    label: "CONDENSED", family: "Bebas Neue",       stack: "'Bebas Neue', sans-serif" },
-    { id: "archivo",  label: "GOTHIC",    family: "Archivo Black",    stack: "'Archivo Black', sans-serif" },
-    { id: "teko",     label: "SQUARE",    family: "Teko",             stack: "'Teko', sans-serif", weight: 600 },
-    { id: "graduate", label: "COLLEGE",   family: "Graduate",         stack: "'Graduate', serif" },
-    { id: "alfa",     label: "SLAB",      family: "Alfa Slab One",    stack: "'Alfa Slab One', serif" },
-    { id: "stencil",  label: "STENCIL",   family: "Saira Stencil One",stack: "'Saira Stencil One', sans-serif" },
-    { id: "racing",   label: "SPEED",     family: "Racing Sans One",  stack: "'Racing Sans One', sans-serif" },
-    { id: "jp",       label: "日本語",     family: "Noto Sans JP",     stack: "'Noto Sans JP', sans-serif", weight: 900, jp: true }
+    { id: "anton",    label: "BLOCK",     stack: "'Anton', sans-serif" },
+    { id: "bebas",    label: "CONDENSED", stack: "'Bebas Neue', sans-serif" },
+    { id: "archivo",  label: "GOTHIC",    stack: "'Archivo Black', sans-serif" },
+    { id: "teko",     label: "SQUARE",    stack: "'Teko', sans-serif", weight: 600 },
+    { id: "russo",    label: "TECH",      stack: "'Russo One', sans-serif" },
+    { id: "graduate", label: "COLLEGE",   stack: "'Graduate', serif" },
+    { id: "alfa",     label: "SLAB",      stack: "'Alfa Slab One', serif" },
+    { id: "bowlby",   label: "HEAVY",     stack: "'Bowlby One', sans-serif" },
+    { id: "racing",   label: "SPEED",     stack: "'Racing Sans One', sans-serif" }
   ];
 
-  var COLORS = [
-    { id: "white",  label: "ホワイト", hex: "#F7F7F5" },
-    { id: "yellow", label: "イエロー", hex: "#F5D000" },
-    { id: "lime",   label: "ライム",   hex: "#D8FF00" }
-  ];
+  /* 背番号に使えるフォント（数字が読みやすい書体に限定） */
+  var NUMBER_FONT_IDS = ["anton", "bebas", "teko", "racing"];
+
+  /* プリント色はホワイトのみ */
+  var PRINT_COLOR = "#F4F4F2";
 
   var LAYOUTS = [
     { id: "name-number", label: "チーム名 ＋ 背番号", name: true,  number: true  },
@@ -40,25 +44,31 @@
   ];
 
   var SCALES = [
-    { id: "s", label: "S", name: 6.6, number: 8.0 },
-    { id: "m", label: "M", name: 8.4, number: 9.8 },
-    { id: "l", label: "L", name: 10.4, number: 11.8 }
+    { id: "s", label: "S", name: 6.2,  number: 7.4 },
+    { id: "m", label: "M", name: 7.9,  number: 9.2 },
+    { id: "l", label: "L", name: 9.8,  number: 11.2 }
   ];
 
   /* プリント位置（グローブ画像に対する比率）。画像を差し替えたらここを調整します。 */
   var POS = {
-    name:   { x: 0.43, y: 0.485, maxW: 0.46 },
-    number: { x: 0.40, y: 0.805, maxW: 0.26 }
+    name:   { x: 0.510, y: 0.535, maxW: 0.45 },
+    number: { x: 0.520, y: 0.855, maxW: 0.27 }
   };
 
-  var GLOVE_SRC = "assets/images/glove-blank.jpg";
+  var GLOVE_SRC = "assets/images/glove-blank.png";
+
+  function byId(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return list[0];
+  }
+  var NUMBER_FONTS = NUMBER_FONT_IDS.map(function (id) { return byId(FONTS, id); });
 
   /* ------------------------------------------------------------ 状態 --- */
   var state = {
     text: "TEAM FC",
     number: "10",
     font: FONTS[0],
-    color: COLORS[0],
+    numberFont: NUMBER_FONTS[0],
     layout: LAYOUTS[0],
     scale: SCALES[1]
   };
@@ -70,11 +80,12 @@
     text:   $("#dsText"),
     number: $("#dsNumber"),
     fonts:  $("#dsFonts"),
-    colors: $("#dsColors"),
+    numFonts: $("#dsNumFonts"),
     layouts:$("#dsLayouts"),
     scales: $("#dsScales"),
     numberField: $("#dsNumberField"),
     textField:   $("#dsTextField"),
+    numFontBlock: $("#dsNumFontBlock"),
     save:   $("#dsSave"),
     status: $("#dsStatus")
   };
@@ -90,47 +101,54 @@
       "?family=Alfa+Slab+One" +
       "&family=Archivo+Black" +
       "&family=Bebas+Neue" +
+      "&family=Bowlby+One" +
       "&family=Graduate" +
       "&family=Racing+Sans+One" +
-      "&family=Saira+Stencil+One" +
+      "&family=Russo+One" +
       "&family=Teko:wght@600" +
       "&display=swap";
     document.head.appendChild(link);
   }
 
   /* ------------------------------------------------------- UI 組み立て -- */
-  function chip(cls, active, dataAttr, value, inner, style) {
-    return '<button type="button" class="' + cls + (active ? " is-on" : "") + '" ' +
-           dataAttr + '="' + value + '"' + (style ? ' style="' + style + '"' : "") + '>' +
-           inner + '</button>';
+  function fontChip(f, active, attr) {
+    return '<button type="button" class="ds-font' + (active ? " is-on" : "") + '" ' +
+      attr + '="' + f.id + '">' +
+      '<span class="ds-font__sample" style="font-family:' + f.stack +
+      (f.weight ? ";font-weight:" + f.weight : "") + '">Team</span>' +
+      '<span class="ds-font__label">' + f.label + '</span></button>';
+  }
+
+  function numChip(f, active) {
+    return '<button type="button" class="ds-font' + (active ? " is-on" : "") + '" ' +
+      'data-numfont="' + f.id + '">' +
+      '<span class="ds-font__sample" style="font-family:' + f.stack +
+      (f.weight ? ";font-weight:" + f.weight : "") + '">10</span>' +
+      '<span class="ds-font__label">' + f.label + '</span></button>';
   }
 
   function renderControls() {
     els.layouts.innerHTML = LAYOUTS.map(function (l) {
-      return chip("ds-chip", l.id === state.layout.id, "data-layout", l.id, l.label);
+      return '<button type="button" class="ds-chip' + (l.id === state.layout.id ? " is-on" : "") +
+             '" data-layout="' + l.id + '">' + l.label + '</button>';
     }).join("");
 
     els.fonts.innerHTML = FONTS.map(function (f) {
-      var sample = f.jp ? "チーム" : "Team";
-      return chip("ds-font", f.id === state.font.id, "data-font", f.id,
-        '<span class="ds-font__sample" style="font-family:' + f.stack +
-        (f.weight ? ";font-weight:" + f.weight : "") + '">' + sample + '</span>' +
-        '<span class="ds-font__label">' + f.label + '</span>');
+      return fontChip(f, f.id === state.font.id, "data-font");
     }).join("");
 
-    els.colors.innerHTML = COLORS.map(function (c) {
-      return chip("ds-swatch", c.id === state.color.id, "data-color", c.id,
-        '<i style="background:' + c.hex + '"></i>' + c.label);
+    els.numFonts.innerHTML = NUMBER_FONTS.map(function (f) {
+      return numChip(f, f.id === state.numberFont.id);
     }).join("");
 
     els.scales.innerHTML = SCALES.map(function (s) {
-      return chip("ds-chip ds-chip--sq", s.id === state.scale.id, "data-scale", s.id, s.label);
+      return '<button type="button" class="ds-chip ds-chip--sq' + (s.id === state.scale.id ? " is-on" : "") +
+             '" data-scale="' + s.id + '">' + s.label + '</button>';
     }).join("");
   }
 
   /* ---------------------------------------------------------- 反映 --- */
   function fit(el, maxRatio, basePx) {
-    // 文字がプリント範囲に収まるよう自動で縮小する
     el.style.fontSize = basePx + "px";
     var maxW = els.stage.clientWidth * maxRatio;
     var w = el.scrollWidth;
@@ -139,28 +157,28 @@
 
   function apply() {
     var stageW = els.stage.clientWidth || 1;
-    var f = state.font;
 
     els.name.hidden = !state.layout.name;
     els.num.hidden = !state.layout.number;
     els.textField.classList.toggle("is-off", !state.layout.name);
     els.numberField.classList.toggle("is-off", !state.layout.number);
+    els.numFontBlock.classList.toggle("is-off", !state.layout.number);
 
-    var text = state.text.trim() || "TEAM";
-    if (!f.jp) text = text.toUpperCase();
-
+    var f = state.font;
+    var text = (state.text.trim() || "TEAM").toUpperCase();
     els.name.textContent = text;
     els.name.style.fontFamily = f.stack;
     els.name.style.fontWeight = f.weight || 400;
-    els.name.style.color = state.color.hex;
+    els.name.style.color = PRINT_COLOR;
     els.name.style.left = (POS.name.x * 100) + "%";
     els.name.style.top  = (POS.name.y * 100) + "%";
     fit(els.name, POS.name.maxW, stageW * state.scale.name / 100);
 
+    var nf = state.numberFont;
     els.num.textContent = state.number.trim();
-    els.num.style.fontFamily = f.stack;
-    els.num.style.fontWeight = f.weight || 400;
-    els.num.style.color = state.color.hex;
+    els.num.style.fontFamily = nf.stack;
+    els.num.style.fontWeight = nf.weight || 400;
+    els.num.style.color = PRINT_COLOR;
     els.num.style.left = (POS.number.x * 100) + "%";
     els.num.style.top  = (POS.number.y * 100) + "%";
     fit(els.num, POS.number.maxW, stageW * state.scale.number / 100);
@@ -172,7 +190,6 @@
     els.save.disabled = true;
 
     var img = new Image();
-    img.crossOrigin = "anonymous";
     img.onload = function () {
       var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
       ready.then(function () {
@@ -181,31 +198,37 @@
         var cv = document.createElement("canvas");
         cv.width = W; cv.height = H;
         var ctx = cv.getContext("2d");
+
+        // 背景（プレビューと同じ雰囲気に）
+        var bg = ctx.createRadialGradient(W * 0.5, H * 0.40, 0, W * 0.5, H * 0.40, H * 0.72);
+        bg.addColorStop(0, "#3A3A3A");
+        bg.addColorStop(0.6, "#1A1A1A");
+        bg.addColorStop(1, "#0D0D0D");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
         ctx.drawImage(img, 0, 0, W, H);
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = state.color.hex;
+        ctx.fillStyle = PRINT_COLOR;
 
-        var f = state.font;
-        var weight = f.weight || 400;
-
-        function draw(str, pos, sizePct) {
+        function draw(str, pos, sizePct, font) {
           if (!str) return;
+          var weight = font.weight || 400;
           var px = W * sizePct / 100;
-          ctx.font = weight + " " + px + "px " + f.stack;
+          ctx.font = weight + " " + px + "px " + font.stack;
           var maxW = W * pos.maxW;
           var m = ctx.measureText(str).width;
           if (m > maxW && m > 0) {
             px = px * (maxW / m);
-            ctx.font = weight + " " + px + "px " + f.stack;
+            ctx.font = weight + " " + px + "px " + font.stack;
           }
           ctx.fillText(str, W * pos.x, H * pos.y);
         }
 
-        var text = state.text.trim() || "TEAM";
-        if (!f.jp) text = text.toUpperCase();
-        if (state.layout.name)   draw(text, POS.name, state.scale.name);
-        if (state.layout.number) draw(state.number.trim(), POS.number, state.scale.number);
+        var text = (state.text.trim() || "TEAM").toUpperCase();
+        if (state.layout.name)   draw(text, POS.name, state.scale.name, state.font);
+        if (state.layout.number) draw(state.number.trim(), POS.number, state.scale.number, state.numberFont);
 
         cv.toBlob(function (blob) {
           var url = URL.createObjectURL(blob);
@@ -243,22 +266,16 @@
     });
 
     root.addEventListener("click", function (e) {
-      var btn = e.target.closest("[data-font], [data-color], [data-layout], [data-scale]");
+      var btn = e.target.closest("[data-font], [data-numfont], [data-layout], [data-scale]");
       if (!btn) return;
       loadFonts();
 
-      function pick(list, id) {
-        for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
-        return list[0];
-      }
+      if (btn.dataset.font)     state.font       = byId(FONTS, btn.dataset.font);
+      if (btn.dataset.numfont)  state.numberFont = byId(NUMBER_FONTS, btn.dataset.numfont);
+      if (btn.dataset.layout)   state.layout     = byId(LAYOUTS, btn.dataset.layout);
+      if (btn.dataset.scale)    state.scale      = byId(SCALES, btn.dataset.scale);
 
-      if (btn.dataset.font)   { state.font   = pick(FONTS,   btn.dataset.font); }
-      if (btn.dataset.color)  { state.color  = pick(COLORS,  btn.dataset.color); }
-      if (btn.dataset.layout) { state.layout = pick(LAYOUTS, btn.dataset.layout); }
-      if (btn.dataset.scale)  { state.scale  = pick(SCALES,  btn.dataset.scale); }
-
-      var group = btn.parentElement;
-      $$("button", group).forEach(function (b) { b.classList.toggle("is-on", b === btn); });
+      $$("button", btn.parentElement).forEach(function (b) { b.classList.toggle("is-on", b === btn); });
       apply();
     });
 
