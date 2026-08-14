@@ -16,6 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/lp.css">
+<link rel="stylesheet" href="assets/css/designer.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='16' font-weight='900' fill='%23D8FF00' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -28,6 +29,7 @@
       <div class="nav__links">
         <a href="#product">PRODUCT</a>
         <a href="#custom">CUSTOM</a>
+        <a href="#designer">DESIGN</a>
         <a href="#gallery">GALLERY</a>
         <a href="#size">SIZE</a>
         <a href="#store">TEAM STORE</a>
@@ -192,6 +194,74 @@
           <p class="note">チームロゴのみ</p>
         </div>
       </article>
+    </div>
+
+    <!-- ------------------------------------------ DESIGN SIMULATOR ----- -->
+    <div class="wrap designer" id="designer">
+      <header class="designer__head reveal">
+        <p class="kicker">DESIGN SIMULATOR</p>
+        <h2 class="display display--m">Make yours.</h2>
+        <p class="lead">チーム名を入れて、フォントを選ぶだけ。<br>その場で完成イメージができます。</p>
+      </header>
+
+      <div class="designer__grid">
+
+        <!-- preview -->
+        <div class="designer__preview reveal">
+          <div class="dz-wrap">
+            <div class="dz" id="dzStage">
+              <img src="assets/images/glove-blank.jpg" alt="デザインシミュレーターの手袋プレビュー" loading="lazy">
+              <span class="dz__name" id="dzName"></span>
+              <span class="dz__num" id="dzNum"></span>
+            </div>
+          </div>
+          <p class="note dz-note">※ 雰囲気を確認するためのイメージです。実際のプリント位置・サイズは製作時に調整します。</p>
+        </div>
+
+        <!-- controls -->
+        <div class="designer__controls reveal" style="--d:80ms">
+
+          <div class="ds-block">
+            <span class="ds-label">プリント内容</span>
+            <div class="ds-group" id="dsLayouts"></div>
+          </div>
+
+          <div class="ds-block">
+            <div class="ds-row">
+              <label class="ds-field" id="dsTextField">
+                <span class="ds-label">チーム名</span>
+                <input type="text" class="ds-input" id="dsText" maxlength="16" placeholder="TEAM FC" autocomplete="off" spellcheck="false">
+              </label>
+              <label class="ds-field" id="dsNumberField">
+                <span class="ds-label">背番号</span>
+                <input type="text" class="ds-input" id="dsNumber" maxlength="3" inputmode="numeric" placeholder="10" autocomplete="off">
+              </label>
+            </div>
+          </div>
+
+          <div class="ds-block">
+            <span class="ds-label">フォント</span>
+            <div class="ds-fonts" id="dsFonts"></div>
+          </div>
+
+          <div class="ds-block">
+            <span class="ds-label">プリント色</span>
+            <div class="ds-group" id="dsColors"></div>
+          </div>
+
+          <div class="ds-block">
+            <span class="ds-label">大きさ</span>
+            <div class="ds-group" id="dsScales"></div>
+          </div>
+
+          <div class="ds-actions">
+            <button type="button" class="btn btn--acc" id="dsSave">この画像を保存<span class="btn__arrow">↓</span></button>
+            <span class="ds-status" id="dsStatus"></span>
+          </div>
+          <p class="note" style="margin-top:14px">保存した画像をNOF担当者へお送りいただければ、そのまま制作を進められます。</p>
+
+        </div>
+      </div>
     </div>
   </section>
 
@@ -375,6 +445,7 @@
       <nav class="site-footer__nav">
         <a href="#product">PRODUCT</a>
         <a href="#custom">CUSTOM</a>
+        <a href="#designer">DESIGN</a>
         <a href="#gallery">GALLERY</a>
         <a href="#size">SIZE</a>
         <a href="#how">HOW TO ORDER</a>
@@ -392,5 +463,6 @@
 <script src="assets/js/core.js"></script>
 <script src="assets/js/sizeguide.js"></script>
 <script src="assets/js/lp.js"></script>
+<script src="assets/js/designer.js"></script>
 </body>
 </html>

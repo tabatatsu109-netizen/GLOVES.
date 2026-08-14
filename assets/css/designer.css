@@ -1,0 +1,131 @@
+/* ==========================================================================
+   NOF — DESIGN SIMULATOR
+   ========================================================================== */
+
+.designer {
+  margin-top: clamp(48px, 7vw, 90px);
+  padding-top: clamp(40px, 5vw, 68px);
+  border-top: 1px solid var(--line-dark);
+}
+.designer__head { margin-bottom: clamp(26px, 4vw, 44px); }
+.designer__head .kicker { margin-bottom: 14px; }
+.designer__head .display { margin-bottom: 12px; }
+
+.designer__grid { display: grid; gap: clamp(26px, 4vw, 52px); }
+@media (min-width: 900px) {
+  .designer__grid { grid-template-columns: 0.82fr 1fr; align-items: start; }
+  .designer__preview { position: sticky; top: calc(var(--head-h) + 24px); }
+}
+
+/* ------------------------------------------------------------ preview -- */
+.dz-wrap { background: #0C0C0C; border: 1px solid var(--line-dark); padding: 14px; }
+.dz {
+  position: relative;
+  aspect-ratio: 410 / 840;
+  width: min(340px, 100%);
+  margin-inline: auto;
+  container-type: inline-size;
+}
+.dz > img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* モバイルは操作パネルが見えるよう高さを抑える */
+@media (max-width: 899px) {
+  .dz { width: auto; height: min(50svh, 480px); margin-inline: auto; }
+}
+.dz__name, .dz__num {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: .01em;
+  pointer-events: none;
+  text-rendering: geometricPrecision;
+}
+.dz-note { margin-top: 12px; }
+
+/* ----------------------------------------------------------- controls -- */
+.ds-block { margin-bottom: 26px; }
+.ds-block.is-off { opacity: .35; pointer-events: none; }
+.ds-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+  margin-bottom: 10px;
+}
+
+.ds-input {
+  width: 100%;
+  background: #0D0D0D;
+  border: 1px solid var(--line-dark);
+  border-radius: 0;
+  padding: 14px;
+  font-size: 16px;
+  letter-spacing: .04em;
+  -webkit-appearance: none;
+  transition: border-color .2s var(--ease);
+}
+.ds-input:focus { outline: none; border-color: var(--acc); background: #111; }
+.ds-input::placeholder { color: rgba(255, 255, 255, .28); }
+
+.ds-row { display: grid; gap: 14px; }
+@media (min-width: 560px) { .ds-row { grid-template-columns: 1.6fr 1fr; } }
+
+.ds-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ds-chip {
+  padding: 12px 16px;
+  border: 1px solid var(--line-dark);
+  background: #0D0D0D;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.ds-chip:hover { border-color: rgba(255, 255, 255, .4); }
+.ds-chip.is-on { background: var(--white); color: var(--black); border-color: var(--white); }
+.ds-chip--sq { min-width: 52px; text-align: center; font-family: var(--f-display); font-size: 15px; }
+
+/* font picker */
+.ds-fonts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (min-width: 620px) { .ds-fonts { grid-template-columns: repeat(3, 1fr); } }
+.ds-font {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 14px 8px 10px;
+  border: 1px solid var(--line-dark);
+  background: #0D0D0D;
+  transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.ds-font:hover { border-color: rgba(255, 255, 255, .4); }
+.ds-font.is-on { background: var(--acc); color: var(--black); border-color: var(--acc); }
+.ds-font__sample { font-size: 22px; line-height: 1.05; }
+.ds-font__label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  color: rgba(255, 255, 255, .5);
+}
+.ds-font.is-on .ds-font__label { color: rgba(0, 0, 0, .6); }
+
+/* colour swatches */
+.ds-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--line-dark);
+  background: #0D0D0D;
+  font-size: 11.5px;
+  font-weight: 700;
+  transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease);
+}
+.ds-swatch i { width: 18px; height: 18px; display: block; border: 1px solid rgba(0, 0, 0, .35); }
+.ds-swatch.is-on { background: var(--white); color: var(--black); border-color: var(--white); }
+
+/* actions */
+.ds-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding-top: 6px; }
+.ds-status { font-size: 11.5px; color: var(--acc); letter-spacing: .02em; }
