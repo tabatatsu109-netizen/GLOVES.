@@ -37,12 +37,14 @@
   document.title = team.teamName + " ｜ " + team.productName + " ｜ NO FOOTBALL";
 
   /* ----------------------------------------------------------- helpers --- */
-  var PRINT_LABEL = {
-    "logo-number": "チームロゴ ＋ 背番号",
-    "name-number": "チーム名 ＋ 背番号",
-    "name": "チーム名",
-    "logo": "チームロゴ"
-  };
+  /* プリント仕様は core.js の NOF.print に集約（LPのシミュレーターと共通）。
+     ロゴ指定なのにロゴ画像が無いチームは、矛盾を出さず文字に降格される。 */
+  var P = NOF.print;
+  var printType  = P.resolve(team);
+  var printFont  = P.font((team.print && team.print.font) || "anton");
+  var printNumFont = P.numberFont((team.print && (team.print.numberFont || team.print.font)) || "anton");
+  var printScale = P.scale((team.print && team.print.scale) || "m");
+  var printName  = (team.printName || team.teamName || "").toUpperCase();
 
   function formatDeadline(iso) {
     if (!iso) return "—";
@@ -66,7 +68,8 @@
     }
     $("#teamPrice").textContent = NOF.yen(team.price);
     $("#teamDesc").textContent = team.description || "";
-    $("#teamPrint").textContent = PRINT_LABEL[team.printType] || "チーム名 ／ ロゴ ／ 背番号";
+    // 実際に描かれる内容から表示するので、仕様欄とプレビューが食い違わない
+    $("#teamPrint").textContent = printType.label;
     $("#teamDeadline").textContent = formatDeadline(team.deadline);
 
     if (team.logo) {
@@ -110,10 +113,24 @@
   }
 
   /* --------------------------------------------------------- preview --- */
+
+  /** プリント位置を NOF.print.POS から流し込む（CSSに直書きしない） */
+  function placePrint() {
+    var pos = printType.logo ? P.POS.logo : P.POS.name;
+    var box = $("#pvPrint");
+    box.style.left = (pos.x * 100) + "%";
+    box.style.top  = (pos.y * 100) + "%";
+    box.style.width = (pos.maxW * 100) + "%";
+
+    var num = $("#pvNum");
+    num.style.left = (P.POS.number.x * 100) + "%";
+    num.style.top  = (P.POS.number.y * 100) + "%";
+  }
+
   function renderPreviewStatic() {
     var name = $("#pvName"), logo = $("#pvLogo");
-    var usesLogo = !!team.logo && team.printType.indexOf("logo") === 0;
-    if (usesLogo) {
+
+    if (printType.logo) {
       logo.hidden = false;
       logo.classList.add("team-logo--" + (team.logo.shape || "rect"));
       if (team.logo.ratio) logo.style.aspectRatio = team.logo.ratio;
@@ -122,14 +139,29 @@
       name.hidden = true;
     } else {
       logo.hidden = true;
-      name.hidden = false;
-      name.textContent = team.teamName;
-      // 長いチーム名は小さく組む
-      name.style.fontSize = team.teamName.length > 10 ? "clamp(11px, 3.2vw, 15px)"
-                          : team.teamName.length > 6  ? "clamp(13px, 4vw, 19px)"
-                          : "clamp(16px, 5vw, 24px)";
+      name.hidden = !printType.name;
+      name.textContent = printName;
+      name.style.fontFamily = printFont.stack;
+      name.style.fontWeight = printFont.weight || 400;
     }
-    $("#pvNum").hidden = team.printType.indexOf("number") === -1;
+    $("#pvNum").hidden = !printType.number;
+    $("#pvNum").style.fontFamily = printNumFont.stack;
+    $("#pvNum").style.fontWeight = printNumFont.weight || 400;
+    placePrint();
+    fitPreview();
+  }
+
+  /** LPのシミュレーターと同じ計算で文字サイズを決める */
+  function fitPreview() {
+    var stage = $("#pv");
+    var w = stage.clientWidth;
+    if (!w) return;
+    if (printType.name) {
+      P.fitText($("#pvName"), w, P.POS.name.maxW, w * printScale.name / 100);
+    }
+    if (printType.number) {
+      P.fitText($("#pvNum"), w, P.POS.number.maxW, w * printScale.number / 100);
+    }
   }
 
   function updatePreview() {
@@ -139,6 +171,7 @@
     var next = p.number === "" ? "—" : p.number;
     if (num.textContent !== next) {
       num.textContent = next;
+      fitPreview();
       num.classList.remove("is-bump");
       void num.offsetWidth;               // reflow でアニメーションを再生
       num.classList.add("is-bump");
@@ -585,6 +618,14 @@
     $("#stickyBtn").addEventListener("click", function () {
       form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event("submit", { cancelable: true }));
     });
+
+    // 画像の遅延読込などで幅が変わったらプレビューの文字サイズを再計算
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(function () { fitPreview(); }).observe($("#pv"));
+    } else {
+      window.addEventListener("resize", fitPreview);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPreview);
 
     $$("[data-goto-order]").forEach(function (a) {
       a.addEventListener("click", function (e) {

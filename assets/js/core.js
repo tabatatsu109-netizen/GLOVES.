@@ -163,6 +163,134 @@
     });
   }
 
+  /* =========================================================================
+     PRINT — 手袋のプリント仕様（LP のシミュレーターとチームページ共通）
+     -------------------------------------------------------------------------
+     土台は実写の切り抜き写真 1枚。プリント位置は画像に対する比率で持つので、
+     写真を差し替えるときは POS だけ合わせ直せば両方の画面に反映されます。
+     ========================================================================= */
+
+  /* プリントはカッティング（切り文字）のため、線が細い書体・ステンシル・
+     装飾の多い書体は入れていません。すべて塗りが太く単純な書体です。 */
+  var FONTS = [
+    { id: "anton",    label: "BLOCK",     stack: "'Anton', sans-serif" },
+    { id: "bebas",    label: "CONDENSED", stack: "'Bebas Neue', sans-serif" },
+    { id: "archivo",  label: "GOTHIC",    stack: "'Archivo Black', sans-serif" },
+    { id: "teko",     label: "SQUARE",    stack: "'Teko', sans-serif", weight: 600 },
+    { id: "russo",    label: "TECH",      stack: "'Russo One', sans-serif" },
+    { id: "graduate", label: "COLLEGE",   stack: "'Graduate', serif" },
+    { id: "alfa",     label: "SLAB",      stack: "'Alfa Slab One', serif" },
+    { id: "bowlby",   label: "HEAVY",     stack: "'Bowlby One', sans-serif" },
+    { id: "racing",   label: "SPEED",     stack: "'Racing Sans One', sans-serif" }
+  ];
+
+  /* 背番号に使えるフォント（数字が読みやすい書体に限定） */
+  var NUMBER_FONT_IDS = ["anton", "bebas", "teko", "racing"];
+
+  var SCALES = [
+    { id: "s", label: "S", name: 6.2,  number: 7.4 },
+    { id: "m", label: "M", name: 7.9,  number: 9.2 },
+    { id: "l", label: "L", name: 9.8,  number: 11.2 }
+  ];
+
+  /**
+   * プリント内容の唯一の定義。
+   * teams.js の printType と、シミュレーターの選択肢は同じ語彙を使います。
+   * inDesigner: シミュレーターの選択肢に出すかどうか（ロゴは扱わないので除外）
+   */
+  var TYPES = {
+    "logo-number": { logo: true,  name: false, number: true,  label: "チームロゴ ＋ 背番号", inDesigner: false },
+    "logo":        { logo: true,  name: false, number: false, label: "チームロゴ",           inDesigner: false },
+    "name-number": { logo: false, name: true,  number: true,  label: "チーム名 ＋ 背番号",   inDesigner: true  },
+    "name":        { logo: false, name: true,  number: false, label: "チーム名のみ",         inDesigner: true  },
+    "number":      { logo: false, name: false, number: true,  label: "背番号のみ",           inDesigner: true  }
+  };
+
+  var PRINT = {
+    GLOVE_SRC: "assets/images/glove-blank.png",
+    GLOVE_W: 354,
+    GLOVE_H: 723,
+    RATIO: "354 / 723",
+    COLOR: "#F4F4F2",
+    /* プリント位置（画像に対する比率）。写真を差し替えたらここだけ直します。 */
+    POS: {
+      name:   { x: 0.510, y: 0.535, maxW: 0.45 },
+      number: { x: 0.520, y: 0.855, maxW: 0.27 },
+      logo:   { x: 0.510, y: 0.520, maxW: 0.30 }
+    },
+    FONTS: FONTS,
+    NUMBER_FONT_IDS: NUMBER_FONT_IDS,
+    SCALES: SCALES,
+    TYPES: TYPES,
+
+    font: function (id) { return pick(FONTS, id); },
+    numberFont: function (id) {
+      return (NUMBER_FONT_IDS.indexOf(id) >= 0) ? pick(FONTS, id) : pick(FONTS, NUMBER_FONT_IDS[0]);
+    },
+    scale: function (id) { return pick(SCALES, id); },
+
+    /**
+     * チーム設定から実際に描くプリント内容を決める。
+     * ロゴ指定なのにロゴ画像が無い場合は、矛盾を表示せず文字に降格させる。
+     */
+    resolve: function (team) {
+      var t = TYPES[team && team.printType] || TYPES["name-number"];
+      if (t.logo && !(team && team.logo)) {
+        t = (team.printType === "logo-number") ? TYPES["name-number"] : TYPES["name"];
+      }
+      return t;
+    },
+
+    /** 文字がプリント範囲に収まるよう縮小する */
+    fitText: function (el, stageW, maxRatio, basePx) {
+      var maxW = stageW * maxRatio;
+      if (!(maxW > 0)) return;
+      el.style.fontSize = basePx + "px";
+      var w = el.scrollWidth;
+      if (w > maxW && w > 0) el.style.fontSize = (basePx * (maxW / w)) + "px";
+    },
+
+    /** Canvas に1行描く。画面と同じ位置・同じ収まり方になるよう字面の中央で揃える。 */
+    drawText: function (ctx, str, pos, sizePct, font, W, H) {
+      if (!str) return;
+      var weight = font.weight || 400;
+      var px = W * sizePct / 100;
+      ctx.font = weight + " " + px + "px " + font.stack;
+      var maxW = W * pos.maxW;
+      var m = ctx.measureText(str);
+      if (m.width > maxW && m.width > 0) {
+        px = px * (maxW / m.width);
+        ctx.font = weight + " " + px + "px " + font.stack;
+        m = ctx.measureText(str);
+      }
+      // CSS は行ボックス中央、Canvas の middle は em ボックス中央でズレるため
+      // 実際の字面（ink）の中央に合わせる
+      var asc = m.actualBoundingBoxAscent, desc = m.actualBoundingBoxDescent;
+      if (typeof asc === "number" && typeof desc === "number") {
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(str, W * pos.x, H * pos.y + (asc - desc) / 2);
+      } else {
+        ctx.textBaseline = "middle";
+        ctx.fillText(str, W * pos.x, H * pos.y);
+      }
+    },
+
+    /** 書き出し用の背景（プレビューと同じ雰囲気） */
+    paintBackground: function (ctx, W, H) {
+      var bg = ctx.createRadialGradient(W * 0.5, H * 0.40, 0, W * 0.5, H * 0.40, H * 0.72);
+      bg.addColorStop(0, "#3A3A3A");
+      bg.addColorStop(0.6, "#1A1A1A");
+      bg.addColorStop(1, "#0D0D0D");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+    }
+  };
+
+  function pick(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return list[0];
+  }
+
   /* -------------------------------------------------------------- UI utils */
 
   /**
@@ -256,6 +384,7 @@
     calcOrder: calcOrder,
     orderNumber: orderNumber,
     submitOrder: submitOrder,
+    print: PRINT,
     initReveal: initReveal,
     initHeader: initHeader,
     applyFocal: applyFocal,

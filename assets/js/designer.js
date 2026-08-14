@@ -16,52 +16,29 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || root).querySelectorAll(s)); };
 
   /* ------------------------------------------------------------- 設定 --- */
+  /* 書体・プリント位置・色は core.js の NOF.print に集約してあります。
+     チームページのプレビューと同じ定義を使うので、片方だけズレることがありません。 */
+  var P = NOF.print;
+  var FONTS = P.FONTS;
+  var SCALES = P.SCALES;
+  var POS = P.POS;
+  var PRINT_COLOR = P.COLOR;
+  var GLOVE_SRC = P.GLOVE_SRC;
 
-  /* チーム名に使えるフォント。追加するときはここに1行足し、
-     loadFonts() の URL にもファミリー名を追記します。 */
-  var FONTS = [
-    { id: "anton",    label: "BLOCK",     stack: "'Anton', sans-serif" },
-    { id: "bebas",    label: "CONDENSED", stack: "'Bebas Neue', sans-serif" },
-    { id: "archivo",  label: "GOTHIC",    stack: "'Archivo Black', sans-serif" },
-    { id: "teko",     label: "SQUARE",    stack: "'Teko', sans-serif", weight: 600 },
-    { id: "russo",    label: "TECH",      stack: "'Russo One', sans-serif" },
-    { id: "graduate", label: "COLLEGE",   stack: "'Graduate', serif" },
-    { id: "alfa",     label: "SLAB",      stack: "'Alfa Slab One', serif" },
-    { id: "bowlby",   label: "HEAVY",     stack: "'Bowlby One', sans-serif" },
-    { id: "racing",   label: "SPEED",     stack: "'Racing Sans One', sans-serif" }
-  ];
+  var NUMBER_FONTS = P.NUMBER_FONT_IDS.map(function (id) { return P.font(id); });
 
-  /* 背番号に使えるフォント（数字が読みやすい書体に限定） */
-  var NUMBER_FONT_IDS = ["anton", "bebas", "teko", "racing"];
-
-  /* プリント色はホワイトのみ */
-  var PRINT_COLOR = "#F4F4F2";
-
-  var LAYOUTS = [
-    { id: "name-number", label: "チーム名 ＋ 背番号", name: true,  number: true  },
-    { id: "name",        label: "チーム名のみ",       name: true,  number: false },
-    { id: "number",      label: "背番号のみ",         name: false, number: true  }
-  ];
-
-  var SCALES = [
-    { id: "s", label: "S", name: 6.2,  number: 7.4 },
-    { id: "m", label: "M", name: 7.9,  number: 9.2 },
-    { id: "l", label: "L", name: 9.8,  number: 11.2 }
-  ];
-
-  /* プリント位置（グローブ画像に対する比率）。画像を差し替えたらここを調整します。 */
-  var POS = {
-    name:   { x: 0.510, y: 0.535, maxW: 0.45 },
-    number: { x: 0.520, y: 0.855, maxW: 0.27 }
-  };
-
-  var GLOVE_SRC = "assets/images/glove-blank.png";
+  /* シミュレーターで選べるプリント内容（ロゴは扱わない） */
+  var LAYOUTS = Object.keys(P.TYPES)
+    .filter(function (k) { return P.TYPES[k].inDesigner; })
+    .map(function (k) {
+      var t = P.TYPES[k];
+      return { id: k, label: t.label, name: t.name, number: t.number };
+    });
 
   function byId(list, id) {
     for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
     return list[0];
   }
-  var NUMBER_FONTS = NUMBER_FONT_IDS.map(function (id) { return byId(FONTS, id); });
 
   /* ------------------------------------------------------------ 状態 --- */
   var state = {
@@ -155,11 +132,7 @@
   }
 
   function fit(el, maxRatio, basePx) {
-    var maxW = els.stage.clientWidth * maxRatio;
-    if (!(maxW > 0)) return;          // ステージ未表示時に 0px にしてしまわない
-    el.style.fontSize = basePx + "px";
-    var w = el.scrollWidth;
-    if (w > maxW && w > 0) el.style.fontSize = (basePx * (maxW / w)) + "px";
+    P.fitText(el, els.stage.clientWidth, maxRatio, basePx);
   }
 
   function apply() {
@@ -214,35 +187,18 @@
         var ctx = cv.getContext("2d");
 
         // 背景（プレビューと同じ雰囲気に）
-        var bg = ctx.createRadialGradient(W * 0.5, H * 0.40, 0, W * 0.5, H * 0.40, H * 0.72);
-        bg.addColorStop(0, "#3A3A3A");
-        bg.addColorStop(0.6, "#1A1A1A");
-        bg.addColorStop(1, "#0D0D0D");
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, W, H);
-
+        P.paintBackground(ctx, W, H);
         ctx.drawImage(img, 0, 0, W, H);
         ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
         ctx.fillStyle = PRINT_COLOR;
 
-        function draw(str, pos, sizePct, font) {
-          if (!str) return;
-          var weight = font.weight || 400;
-          var px = W * sizePct / 100;
-          ctx.font = weight + " " + px + "px " + font.stack;
-          var maxW = W * pos.maxW;
-          var m = ctx.measureText(str).width;
-          if (m > maxW && m > 0) {
-            px = px * (maxW / m);
-            ctx.font = weight + " " + px + "px " + font.stack;
-          }
-          ctx.fillText(str, W * pos.x, H * pos.y);
-        }
-
         var text = (state.text.trim() || "TEAM").toUpperCase();
-        if (state.layout.name)   draw(text, POS.name, state.scale.name, state.font);
-        if (state.layout.number) draw(state.number.trim(), POS.number, state.scale.number, state.numberFont);
+        if (state.layout.name) {
+          P.drawText(ctx, text, POS.name, state.scale.name, state.font, W, H);
+        }
+        if (state.layout.number) {
+          P.drawText(ctx, state.number.trim(), POS.number, state.scale.number, state.numberFont, W, H);
+        }
 
         cv.toBlob(function (blob) {
           if (!blob) { fail("画像の作成に失敗しました。"); return; }

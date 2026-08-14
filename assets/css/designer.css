@@ -41,12 +41,12 @@
 @media (max-width: 899px) {
   .dz { width: auto; height: min(50svh, 470px); margin-inline: auto; }
 }
+/* letter-spacing は付けない。Canvas 側で再現できず書き出し画像とズレるため。 */
 .dz__name, .dz__num {
   position: absolute;
   transform: translate(-50%, -50%);
   white-space: nowrap;
   line-height: 1;
-  letter-spacing: .01em;
   pointer-events: none;
   text-rendering: geometricPrecision;
 }

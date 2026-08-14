@@ -70,6 +70,7 @@ window.NOF_TEAMS = {
     status: "open",
     deadline: "2026-09-30",
     printType: "logo-number",
+    print: { font: "anton", numberFont: "anton", scale: "m" },
     description:
       "GRANDEオリジナル フィールドグローブ。\nチームエンブレムと背番号入り。\nトレーニングから試合前まで使えるチーム専用アイテムです。",
     hero: { src: "assets/images/glove-grande.jpg", px: 50, py: 50, z: 1.02 },
@@ -94,6 +95,7 @@ window.NOF_TEAMS = {
     status: "open",
     deadline: "2026-09-30",
     printType: "logo-number",
+    print: { font: "anton", numberFont: "anton", scale: "m" },
     description:
       "ALA SERIOオリジナル フィールドグローブ。\nチームエンブレムと背番号入り。\n練習・ウォーミングアップ・試合前に。",
     hero: { src: "assets/images/glove-alaserio.jpg", px: 100, py: 80.6, z: 2.63 },
@@ -116,6 +118,7 @@ window.NOF_TEAMS = {
     status: "open",
     deadline: "2026-09-30",
     printType: "name-number",
+    print: { font: "archivo", numberFont: "anton", scale: "m" },
     description:
       "OWLオリジナル フィールドグローブ。\nチーム名（白）と背番号入り。\n冬の定番を、チームアイテムに。",
     hero: { src: "assets/images/glove-owl.jpg", px: 100, py: 75, z: 2.5 },
@@ -138,6 +141,7 @@ window.NOF_TEAMS = {
     status: "open",
     deadline: "2026-09-30",
     printType: "logo-number",
+    print: { font: "anton", numberFont: "anton", scale: "m" },
     description:
       "GYOSEI INTERNATIONALオリジナル フィールドグローブ。\nチームロゴと背番号入り。\nトレーニングから試合前まで。",
     hero: { src: "assets/images/photo-gyosei.jpg", px: 50, py: 50, z: 1.02 },
@@ -161,6 +165,7 @@ window.NOF_TEAMS = {
     status: "open",
     deadline: "2026-09-30",
     printType: "name-number",
+    print: { font: "graduate", numberFont: "teko", scale: "m" },
     description:
       "SAMPLE FCオリジナル フィールドグローブ。\nチーム名・背番号入り。\nこのページはデモ用のチーム専用ページです。",
     hero: { src: "assets/images/glove-teamfc.jpg", px: 50, py: 50, z: 1.02 },

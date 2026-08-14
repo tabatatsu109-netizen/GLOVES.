@@ -26,6 +26,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- プリント用の書体（プレビューで実際の書体を再現するため） -->
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Black&family=Bebas+Neue&family=Bowlby+One&family=Graduate&family=Racing+Sans+One&family=Russo+One&family=Teko:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/team.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='16' font-weight='900' fill='%23D8FF00' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
@@ -110,31 +112,8 @@
               <span class="pv__badge" id="pvBadge">PLAYER 01</span>
             </div>
             <div class="pv" id="pv">
-              <svg class="pv__glove" viewBox="0 0 320 500" aria-hidden="true">
-                <defs>
-                  <linearGradient id="gGlove" gradientUnits="userSpaceOnUse" x1="70" y1="60" x2="280" y2="470">
-                    <stop offset="0"    stop-color="#2A2A2A"/>
-                    <stop offset="0.45" stop-color="#171717"/>
-                    <stop offset="1"    stop-color="#070707"/>
-                  </linearGradient>
-                  <linearGradient id="gCuff" gradientUnits="userSpaceOnUse" x1="84" y1="386" x2="252" y2="492">
-                    <stop offset="0" stop-color="#1F1F1F"/>
-                    <stop offset="1" stop-color="#0A0A0A"/>
-                  </linearGradient>
-                </defs>
-                <g fill="url(#gGlove)">
-                  <rect x="58"  y="252" width="44"  height="120" rx="22" transform="rotate(-24 100 368)"/>
-                  <rect x="82"  y="88"  width="38"  height="150" rx="19"/>
-                  <rect x="127" y="68"  width="38"  height="170" rx="19"/>
-                  <rect x="172" y="82"  width="38"  height="156" rx="19"/>
-                  <rect x="217" y="116" width="38"  height="122" rx="19"/>
-                  <rect x="78"  y="190" width="180" height="220" rx="42"/>
-                  <rect x="78"  y="330" width="180" height="80"/>
-                </g>
-                <rect x="78" y="386" width="180" height="102" rx="10" fill="url(#gCuff)"/>
-                <path d="M78 392h180" stroke="rgba(255,255,255,.05)" stroke-width="2"/>
-              </svg>
-
+              <img class="pv__glove" src="assets/images/glove-blank.png" alt=""
+                   width="354" height="723" loading="lazy" decoding="async">
               <div class="pv__print" id="pvPrint">
                 <div class="pv__logo fig" id="pvLogo" hidden><img alt="" width="200" height="200"></div>
                 <span class="pv__name" id="pvName"></span>
