@@ -43,7 +43,8 @@
 }
 
 .thero__main { aspect-ratio: 1 / 1; background: #101010; }
-.thero__thumbs { display: flex; gap: 6px; margin-top: 6px; }
+/* 4枚あると 320px 幅で溢れるので折り返す */
+.thero__thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .thumb {
   width: 74px;
   aspect-ratio: 1 / 1;
@@ -101,7 +102,7 @@
 .order { padding-bottom: clamp(50px, 8vw, 100px); }
 .order__grid { display: grid; gap: clamp(26px, 4vw, 52px); }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   .order__grid { grid-template-columns: 0.7fr 1fr; align-items: start; }
   .preview-col { position: sticky; top: calc(var(--head-h) + 24px); }
 }
@@ -187,16 +188,7 @@
 
 .field { display: grid; gap: 7px; }
 .field--hidden { display: none; }
-.field__label {
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, .78);
-}
+.field__label { display: flex; align-items: center; gap: 8px; }
 .field__label i {
   font-style: normal;
   font-size: 9px;
@@ -387,7 +379,7 @@
 .stickybar__value { font-family: var(--f-display); font-size: 26px; line-height: 1; color: var(--acc); }
 .stickybar__btn { margin-left: auto; padding: 17px 24px; }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   .stickybar { display: none; }
   .team-body.has-stickybar { padding-bottom: 0; }
 }
@@ -468,9 +460,48 @@
 .done__meta > div { background: var(--black); padding: 16px 18px; display: grid; gap: 5px; }
 .done__meta dt { font-size: 9.5px; font-weight: 800; letter-spacing: .16em; color: rgba(255,255,255,.5); }
 .done__meta dd { margin: 0; font-size: 16px; font-weight: 700; }
-.done__code { font-family: var(--f-display); font-size: 24px !important; color: var(--acc); letter-spacing: .04em; }
+.done__meta dd.done__code { font-family: var(--f-display); font-size: 24px; color: var(--acc); letter-spacing: .04em; }
 .done__body { margin-bottom: 30px; }
 @media (min-width: 620px) { .done__meta { grid-template-columns: repeat(2, 1fr); } }
 
 .team-footer { padding-block: 30px; border-top: 1px solid var(--line-dark); }
 .team-footer a:hover { color: var(--acc); }
+
+/* ---------------------------------------------------------------- 印刷 --- */
+/* 注文内容の控えとして確認画面・完了画面を印刷することがあるため、
+   黒背景・固定ヘッダー・固定CTAを外して読める状態にする。 */
+@media print {
+  .team-body { background: #fff !important; padding-bottom: 0 !important; }
+
+  .site-header, .stickybar, .team-footer,
+  .confirm__actions, .done__actions, .preview-col, .skip-link { display: none !important; }
+
+  .view { padding-top: 0 !important; }
+  .confirm, .done { padding-block: 0 !important; max-width: none !important; }
+
+  /* 文字は一律で黒。個別指定の取りこぼしを防ぐ */
+  .confirm, .confirm *, .done, .done * {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+  .kicker::before { background: #000 !important; }
+  .done__meta dt, .kv dt, .note { color: #555 !important; }
+
+  /* 罫線は薄いグレーに */
+  .lines, .kv, .summary, .done__meta,
+  .line, .kv > div, .summary__row, .done__meta > div, .line__spec,
+  .confirm__team { border-color: #999 !important; }
+
+  /* 見出しは紙面で大きすぎるので抑える */
+  .confirm .display { font-size: 22px !important; line-height: 1.4 !important; margin-bottom: 8px !important; }
+  .done__title { font-size: 30px !important; line-height: 1.1 !important; margin-block: 4px 14px !important; }
+  .summary__row--total strong { font-size: 22px !important; }
+  .done__meta { display: block !important; }
+  .done__meta > div { padding: 8px 0 !important; }
+
+  a[href]::after { content: ""; }
+  :focus-visible { outline: none !important; }   /* フォーカス枠を紙に出さない */
+}

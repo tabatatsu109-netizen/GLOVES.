@@ -28,7 +28,6 @@
   aspect-ratio: 354 / 723;
   width: min(320px, 100%);
   margin-inline: auto;
-  container-type: inline-size;
 }
 .dz > img {
   width: 100%; height: 100%;
@@ -57,15 +56,7 @@
 /* 使わない項目は JS 側で disabled も付ける（キーボード操作を塞ぐため） */
 .ds-block.is-off, .ds-field.is-off { opacity: .35; }
 .ds-block.is-off *, .ds-field.is-off * { cursor: default; }
-.ds-label {
-  display: block;
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .78);
-  margin-bottom: 10px;
-}
+.ds-label { display: block; margin-bottom: 10px; }
 
 .ds-input {
   width: 100%;
@@ -123,7 +114,7 @@
 }
 .ds-font.is-on .ds-font__label { color: rgba(0, 0, 0, .6); }
 
-/* colour swatches */
+/* colour swatches — オリジナルプリントの見積もり画面（print.js）が使用 */
 .ds-swatch {
   display: inline-flex;
   align-items: center;

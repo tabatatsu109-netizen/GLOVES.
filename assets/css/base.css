@@ -8,7 +8,6 @@
 :root {
   --black:      #000000;
   --ink:        #0B0B0B;
-  --ink-2:      #141414;
   --white:      #FFFFFF;
   --off:        #F5F5F2;
   --off-2:      #EAE9E4;
@@ -79,7 +78,6 @@ ul, ol { list-style: none; }
 
 .t-dark  { background: var(--black); color: var(--white); }
 .t-light { background: var(--off);   color: var(--ink); }
-.t-white { background: var(--white); color: var(--ink); }
 
 .t-dark  ::selection { background: var(--acc); color: var(--black); }
 
@@ -92,8 +90,6 @@ ul, ol { list-style: none; }
 }
 
 .section { padding-block: clamp(72px, 11vw, 160px); position: relative; }
-.section--tight { padding-block: clamp(52px, 7vw, 96px); }
-.section--flush { padding-block: 0; }
 
 /* ---------- Typography ---------- */
 .display {
@@ -151,11 +147,7 @@ ul, ol { list-style: none; }
 }
 .t-dark .note { color: rgba(255, 255, 255, .55); }
 
-.acc { color: var(--acc); }
-.num-acc { font-family: var(--f-display); color: var(--acc); }
 
-.rule { height: 1px; background: var(--line-light); border: 0; }
-.t-dark .rule { background: var(--line-dark); }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -185,7 +177,6 @@ ul, ol { list-style: none; }
 
 .btn--acc   { --btn-bg: var(--acc); --btn-fg: var(--black); }
 .btn--acc:hover { --btn-bg: #E6FF3D; }
-.btn--white { --btn-bg: var(--white); --btn-fg: var(--black); }
 .btn--lg    { padding: 22px 40px; font-size: 13.5px; }
 .btn--full  { display: flex; width: 100%; }
 
@@ -199,8 +190,6 @@ ul, ol { list-style: none; }
 
 .btn[disabled] { opacity: .35; pointer-events: none; }
 
-/* JP label inside a latin button */
-.btn__jp { font-size: 12px; letter-spacing: .1em; font-weight: 700; }
 
 /* ---------- Figure / CSS crop helper ---------------------------------------
    Crops a point of interest out of a large source photo without new files.
@@ -238,7 +227,6 @@ ul, ol { list-style: none; }
               border-color .35s var(--ease);
   border-bottom: 1px solid transparent;
 }
-.site-header.is-dark  { color: var(--white); }
 .site-header.is-stuck {
   background: var(--black);
   color: var(--white);
@@ -300,7 +288,7 @@ ul, ol { list-style: none; }
 .nav a:hover::after { transform: scaleX(1); }
 .nav .btn { padding: 13px 20px; font-size: 11px; }
 
-@media (max-width: 900px) {
+@media (max-width: 899.98px) {
   .nav__links { display: none; }
   .nav { gap: 14px; }
 }
@@ -315,7 +303,6 @@ ul, ol { list-style: none; }
   display: flex;
   user-select: none;
 }
-.marquee--dark { background: var(--black); color: var(--white); border-color: var(--line-dark); }
 .marquee__track {
   display: flex;
   gap: 40px;
@@ -384,6 +371,17 @@ ul, ol { list-style: none; }
   color: rgba(255, 255, 255, .5);
 }
 
+/* ---------- Form micro label ----------
+   チームページ（.field__label）とシミュレーター（.ds-label）で
+   同じ指定を二重に持っていたため共通化。 */
+.field__label, .ds-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+}
+
 /* ---------- Team link chips (LP / team-not-found) ---------- */
 .team-links__list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .team-links__list a {
@@ -441,7 +439,7 @@ ul, ol { list-style: none; }
 .sg__dim { font-size: 13px; font-weight: 700; color: var(--acc); }
 .sg__hint { font-size: 11px; color: rgba(255, 255, 255, .55); }
 .sg__note { margin-top: 18px; }
-@media (min-width: 720px) {
+@media (min-width: 760px) {
   .sg { align-items: center; }
   .sg__grid { grid-template-columns: repeat(3, 1fr); }
 }
@@ -468,10 +466,8 @@ ul, ol { list-style: none; }
   transition: transform .2s var(--ease);
 }
 .skip-link:focus { transform: none; }
-.stack-8  { display: grid; gap: 8px; }
 .stack-16 { display: grid; gap: 16px; }
 .stack-24 { display: grid; gap: 24px; }
-.stack-40 { display: grid; gap: 40px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
