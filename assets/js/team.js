@@ -19,9 +19,8 @@
 
   var state = {
     players: [newPlayer()],
-    customer: { customerName: "", email: "", tel: "", delivery: DELIVERY[0].id, address: "", note: "" },
-    activePlayer: 1,
-    order: null
+    customer: { customerName: "", email: "", tel: "", delivery: DELIVERY[0].id, note: "" },
+    activePlayer: 1
   };
 
   /* --------------------------------------------------------- not found --- */
@@ -29,7 +28,7 @@
     $("#viewNotFound").hidden = false;
     $("#nfTeamLinks").innerHTML = NOF.listTeams().map(function (t) {
       return '<li><a href="' + NOF.teamUrl(t.slug) + '">' + NOF.escapeHtml(t.teamName) +
-             '<i>/team/' + t.slug + '</i></a></li>';
+             '<i>' + NOF.escapeHtml(NOF.teamUrl(t.slug)) + '</i></a></li>';
     }).join("");
     return;
   }
@@ -274,15 +273,24 @@
   }
 
   /* ---------------------------------------------------------- deliver --- */
+  /**
+   * お受け取り方法。選択肢が1つだけのときはボタンを出さず、
+   * 案内文だけを表示する（設定に増やせば自動で選択UIが出る）。
+   */
   function renderDelivery() {
-    $("#deliveryChoice").innerHTML = DELIVERY.map(function (d) {
-      var on = state.customer.delivery === d.id;
-      return '<button type="button" class="choice__btn' + (on ? " is-on" : "") + '" data-delivery="' + d.id + '"' +
-             ' aria-pressed="' + on + '">' + d.label + '</button>';
-    }).join("");
-    var cur = DELIVERY.filter(function (d) { return d.id === state.customer.delivery; })[0];
+    var single = DELIVERY.length < 2;
+    $("#deliveryChoice").hidden = single;
+    if (!single) {
+      $("#deliveryChoice").innerHTML = DELIVERY.map(function (d) {
+        var on = state.customer.delivery === d.id;
+        return '<button type="button" class="choice__btn' + (on ? " is-on" : "") + '" data-delivery="' + d.id + '"' +
+               ' aria-pressed="' + on + '">' + d.label + '</button>';
+      }).join("");
+    }
+    var cur = DELIVERY.filter(function (d) { return d.id === state.customer.delivery; })[0] || DELIVERY[0];
+    $("#deliveryValue").textContent = cur ? cur.label : "—";
+    $("#deliveryValue").hidden = !single;
     $("#deliveryNote").textContent = cur ? cur.note : "";
-    $("#addressField").classList.toggle("field--hidden", state.customer.delivery !== "individual");
   }
 
   /* ------------------------------------------------------- validation --- */
@@ -403,8 +411,6 @@
       '<div><dt>メール</dt><dd>' + NOF.escapeHtml(c.email) + '</dd></div>' +
       '<div><dt>電話番号</dt><dd>' + NOF.escapeHtml(c.tel) + '</dd></div>' +
       '<div><dt>お受け取り</dt><dd>' + (d ? d.label : "—") + '</dd></div>' +
-      (c.delivery === "individual" && c.address.trim()
-        ? '<div><dt>お届け先</dt><dd>' + NOF.escapeHtml(c.address) + '</dd></div>' : '') +
       (c.note.trim() ? '<div><dt>備考</dt><dd>' + NOF.escapeHtml(c.note) + '</dd></div>' : '') +
     '</dl>';
   }
@@ -444,7 +450,6 @@
         email: state.customer.email.trim(),
         tel: state.customer.tel.trim(),
         delivery: state.customer.delivery,
-        address: state.customer.address.trim(),
         note: state.customer.note.trim()
       },
       totals: {

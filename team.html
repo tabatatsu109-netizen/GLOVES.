@@ -168,13 +168,10 @@
               </div>
 
               <div class="delivery">
-                <span class="field__label">お受け取り方法</span>
-                <div class="choice" id="deliveryChoice"></div>
-                <p class="note" id="deliveryNote"></p>
-                <label class="field field--hidden" id="addressField">
-                  <span class="field__label">お届け先住所</span>
-                  <textarea name="address" rows="2" placeholder="〒000-0000 都道府県市区町村…"></textarea>
-                </label>
+                <span class="field__label" id="deliveryLabel">お受け取り方法</span>
+                <div class="choice" id="deliveryChoice" role="group" aria-labelledby="deliveryLabel" hidden></div>
+                <p class="delivery__value" id="deliveryValue"></p>
+                <p class="note" id="deliveryNote" aria-live="polite"></p>
               </div>
 
               <label class="field">

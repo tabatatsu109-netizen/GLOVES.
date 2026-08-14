@@ -81,11 +81,6 @@
     });
   }
 
-  function sizeById(id) {
-    var sizes = (CONFIG.product && CONFIG.product.sizes) || [];
-    for (var i = 0; i < sizes.length; i++) if (sizes[i].id === id) return sizes[i];
-    return null;
-  }
 
   /* ----------------------------------------------------------------- order */
 
@@ -351,19 +346,6 @@
     if (spec.z != null) figEl.style.setProperty("--z", spec.z);
   }
 
-  /** <div class="fig"><img></div> を生成 */
-  function makeFig(spec, extraClass) {
-    var d = document.createElement("div");
-    d.className = "fig" + (extraClass ? " " + extraClass : "");
-    var img = document.createElement("img");
-    img.src = spec.src;
-    img.alt = spec.alt || "";
-    img.loading = "lazy";
-    img.decoding = "async";
-    d.appendChild(img);
-    applyFocal(d, spec);
-    return d;
-  }
 
   function escapeHtml(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -373,14 +355,12 @@
 
   global.NOF = {
     config: CONFIG,
-    teams: TEAMS,
     yen: yen,
     resolveSlug: resolveSlug,
     getTeam: getTeam,
     listTeams: listTeams,
     teamUrl: teamUrl,
     normalizeTeamLinks: normalizeTeamLinks,
-    sizeById: sizeById,
     calcOrder: calcOrder,
     orderNumber: orderNumber,
     submitOrder: submitOrder,
@@ -388,7 +368,6 @@
     initReveal: initReveal,
     initHeader: initHeader,
     applyFocal: applyFocal,
-    makeFig: makeFig,
     escapeHtml: escapeHtml
   };
 })(window);

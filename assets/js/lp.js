@@ -37,7 +37,7 @@
     if (!host) return;
     host.innerHTML = NOF.listTeams().map(function (t) {
       return '<li><a href="' + NOF.teamUrl(t.slug) + '">' +
-        NOF.escapeHtml(t.teamName) + '<i>/team/' + t.slug + '</i></a></li>';
+        NOF.escapeHtml(t.teamName) + '<i>' + NOF.escapeHtml(NOF.teamUrl(t.slug)) + '</i></a></li>';
     }).join("");
   }
 

@@ -318,6 +318,7 @@
 
 /* delivery choice */
 .delivery { display: grid; gap: 10px; margin-block: 22px; }
+.delivery__value { font-size: 14px; font-weight: 700; }
 .choice { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .choice__btn {
   padding: 14px 10px;

@@ -68,25 +68,6 @@
     status: $("#dsStatus")
   };
 
-  /* -------------------------------------------------- Webフォント読込 --- */
-  var fontsRequested = false;
-  function loadFonts() {
-    if (fontsRequested) return;
-    fontsRequested = true;
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2" +
-      "?family=Alfa+Slab+One" +
-      "&family=Archivo+Black" +
-      "&family=Bebas+Neue" +
-      "&family=Bowlby+One" +
-      "&family=Graduate" +
-      "&family=Racing+Sans+One" +
-      "&family=Russo+One" +
-      "&family=Teko:wght@600" +
-      "&display=swap";
-    document.head.appendChild(link);
-  }
 
   /* ------------------------------------------------------- UI 組み立て -- */
   function fontChip(f, active, attr, sample, kind) {
@@ -236,7 +217,6 @@
     root.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-font], [data-numfont], [data-layout], [data-scale]");
       if (!btn) return;
-      loadFonts();
 
       if (btn.dataset.font)     state.font       = byId(FONTS, btn.dataset.font);
       if (btn.dataset.numfont)  state.numberFont = byId(NUMBER_FONTS, btn.dataset.numfont);
@@ -251,7 +231,6 @@
       apply();
     });
 
-    els.text.addEventListener("focus", loadFonts);
     els.save.addEventListener("click", download);
 
     // 画像の遅延読込などでステージ幅が 0 → 実寸 に変わったときに描き直す
@@ -260,7 +239,7 @@
     } else {
       window.addEventListener("resize", apply);
     }
-    window.addEventListener("load", function () { loadFonts(); apply(); });
+    window.addEventListener("load", apply);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
   }
 

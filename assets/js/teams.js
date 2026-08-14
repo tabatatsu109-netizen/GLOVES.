@@ -10,8 +10,7 @@
    wholesalePrice … NOF 卸価格。購入者画面には絶対に表示しません。
                     販売価格 - 卸価格 = チーム側の差額（内部計算のみ）
 
-   このファイルは assets/data/teams.json と同じ構造です。
-   将来 API / 管理画面へ移行する場合は NOF.loadTeams() の実装だけ
+   将来 API / 管理画面へ移行する場合は core.js の getTeam() / listTeams() を
    差し替えれば、画面側のコードは変更不要です。
    ========================================================================== */
 
@@ -39,10 +38,11 @@ window.NOF_CONFIG = {
     sizeChart: "assets/images/size-chart.jpg"
   },
 
-  /* 配送方法（将来の拡張ポイント） */
+  /* お受け取り方法。
+     1つだけのときは選択UIを出さず、注文データには id が記録されます。
+     2つ以上にすると自動で選択ボタンが表示されます（将来の拡張ポイント）。 */
   deliveryMethods: [
-    { id: "team",       label: "チームまとめ配送", note: "チーム代表者へまとめて発送します。" },
-    { id: "individual", label: "個人配送",       note: "ご入力の住所へ個別に発送します。" }
+    { id: "team", label: "チームまとめ配送", note: "チーム代表者へまとめてお届けします。" }
   ],
 
   /* 注文送信先。null の場合はブラウザ内に保存するデモモードで動作します。 */
@@ -67,7 +67,7 @@ window.NOF_TEAMS = {
     productName: "OFFICIAL FIELD GLOVES",
     price: 2000,
     wholesalePrice: 1600,
-    status: "open",
+    status: "open",           // 予約: 受付停止用。現在は未使用（締切は表示のみ）
     deadline: "2026-09-30",
     printType: "logo-number",
     print: { font: "anton", numberFont: "anton", scale: "m" },
@@ -92,7 +92,7 @@ window.NOF_TEAMS = {
     productName: "OFFICIAL FIELD GLOVES",
     price: 2200,
     wholesalePrice: 1600,
-    status: "open",
+    status: "open",           // 予約: 受付停止用。現在は未使用（締切は表示のみ）
     deadline: "2026-09-30",
     printType: "logo-number",
     print: { font: "anton", numberFont: "anton", scale: "m" },
@@ -115,7 +115,7 @@ window.NOF_TEAMS = {
     productName: "OFFICIAL FIELD GLOVES",
     price: 1900,
     wholesalePrice: 1600,
-    status: "open",
+    status: "open",           // 予約: 受付停止用。現在は未使用（締切は表示のみ）
     deadline: "2026-09-30",
     printType: "name-number",
     print: { font: "archivo", numberFont: "anton", scale: "m" },
@@ -138,7 +138,7 @@ window.NOF_TEAMS = {
     productName: "OFFICIAL FIELD GLOVES",
     price: 2000,
     wholesalePrice: 1600,
-    status: "open",
+    status: "open",           // 予約: 受付停止用。現在は未使用（締切は表示のみ）
     deadline: "2026-09-30",
     printType: "logo-number",
     print: { font: "anton", numberFont: "anton", scale: "m" },
@@ -162,7 +162,7 @@ window.NOF_TEAMS = {
     productName: "OFFICIAL FIELD GLOVES",
     price: 2200,
     wholesalePrice: 1600,
-    status: "open",
+    status: "open",           // 予約: 受付停止用。現在は未使用（締切は表示のみ）
     deadline: "2026-09-30",
     printType: "name-number",
     print: { font: "graduate", numberFont: "teko", scale: "m" },
