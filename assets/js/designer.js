@@ -112,39 +112,35 @@
   }
 
   /* ------------------------------------------------------- UI 組み立て -- */
-  function fontChip(f, active, attr) {
+  function fontChip(f, active, attr, sample, kind) {
     return '<button type="button" class="ds-font' + (active ? " is-on" : "") + '" ' +
-      attr + '="' + f.id + '">' +
+      attr + '="' + f.id + '" aria-pressed="' + active + '"' +
+      ' aria-label="' + kind + 'の書体 ' + f.label + '">' +
       '<span class="ds-font__sample" style="font-family:' + f.stack +
-      (f.weight ? ";font-weight:" + f.weight : "") + '">Team</span>' +
-      '<span class="ds-font__label">' + f.label + '</span></button>';
-  }
-
-  function numChip(f, active) {
-    return '<button type="button" class="ds-font' + (active ? " is-on" : "") + '" ' +
-      'data-numfont="' + f.id + '">' +
-      '<span class="ds-font__sample" style="font-family:' + f.stack +
-      (f.weight ? ";font-weight:" + f.weight : "") + '">10</span>' +
-      '<span class="ds-font__label">' + f.label + '</span></button>';
+      (f.weight ? ";font-weight:" + f.weight : "") + '" aria-hidden="true">' + sample + '</span>' +
+      '<span class="ds-font__label" aria-hidden="true">' + f.label + '</span></button>';
   }
 
   function renderControls() {
     els.layouts.innerHTML = LAYOUTS.map(function (l) {
-      return '<button type="button" class="ds-chip' + (l.id === state.layout.id ? " is-on" : "") +
-             '" data-layout="' + l.id + '">' + l.label + '</button>';
+      var on = l.id === state.layout.id;
+      return '<button type="button" class="ds-chip' + (on ? " is-on" : "") +
+             '" data-layout="' + l.id + '" aria-pressed="' + on + '">' + l.label + '</button>';
     }).join("");
 
     els.fonts.innerHTML = FONTS.map(function (f) {
-      return fontChip(f, f.id === state.font.id, "data-font");
+      return fontChip(f, f.id === state.font.id, "data-font", "Team", "チーム名");
     }).join("");
 
     els.numFonts.innerHTML = NUMBER_FONTS.map(function (f) {
-      return numChip(f, f.id === state.numberFont.id);
+      return fontChip(f, f.id === state.numberFont.id, "data-numfont", "10", "背番号");
     }).join("");
 
     els.scales.innerHTML = SCALES.map(function (s) {
-      return '<button type="button" class="ds-chip ds-chip--sq' + (s.id === state.scale.id ? " is-on" : "") +
-             '" data-scale="' + s.id + '">' + s.label + '</button>';
+      var on = s.id === state.scale.id;
+      return '<button type="button" class="ds-chip ds-chip--sq' + (on ? " is-on" : "") +
+             '" data-scale="' + s.id + '" aria-pressed="' + on + '"' +
+             ' aria-label="大きさ ' + s.label + '">' + s.label + '</button>';
     }).join("");
   }
 
@@ -291,7 +287,11 @@
       if (btn.dataset.layout)   state.layout     = byId(LAYOUTS, btn.dataset.layout);
       if (btn.dataset.scale)    state.scale      = byId(SCALES, btn.dataset.scale);
 
-      $$("button", btn.parentElement).forEach(function (b) { b.classList.toggle("is-on", b === btn); });
+      $$("button", btn.parentElement).forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
       apply();
     });
 

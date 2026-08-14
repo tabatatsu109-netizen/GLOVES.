@@ -31,6 +31,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='16' font-weight='900' fill='%23D8FF00' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
 </head>
 <body class="t-dark team-body">
+<a class="skip-link" href="#main">本文へスキップ</a>
 
 <!-- ======================================================= HEADER ======= -->
 <header class="site-header is-stuck team-header" id="siteHeader">
@@ -46,7 +47,7 @@
   <section class="view view--center" id="viewNotFound" hidden>
     <div class="wrap stack-24">
       <p class="kicker">TEAM STORE</p>
-      <h1 class="display display--m">Team<br>not found.</h1>
+      <h1 class="display display--m" tabindex="-1">Team<br>not found.</h1>
       <p class="lead">お探しのチームページが見つかりませんでした。<br>チーム代表者から届いたURLをご確認ください。</p>
       <div class="stack-16">
         <p class="kicker kicker--plain">DEMO TEAM PAGES</p>
@@ -66,14 +67,14 @@
           <div class="thero__logo" id="teamLogo" hidden></div>
           <div class="thero__idtext">
             <p class="kicker" id="teamKicker">OFFICIAL TEAM STORE</p>
-            <h1 class="display display--l thero__name" id="teamName"></h1>
+            <h1 class="display display--l thero__name" id="teamName" tabindex="-1"></h1>
             <p class="thero__product" id="teamProduct"></p>
           </div>
         </div>
 
         <div class="thero__media">
           <div class="thero__main fig" id="heroFig">
-            <img id="heroImg" src="" alt="">
+            <img id="heroImg" alt="" width="900" height="900">
           </div>
           <ul class="thero__thumbs" id="heroThumbs"></ul>
         </div>
@@ -135,7 +136,7 @@
               </svg>
 
               <div class="pv__print" id="pvPrint">
-                <div class="pv__logo fig" id="pvLogo" hidden><img src="" alt=""></div>
+                <div class="pv__logo fig" id="pvLogo" hidden><img alt="" width="200" height="200"></div>
                 <span class="pv__name" id="pvName"></span>
               </div>
               <span class="pv__num" id="pvNum">10</span>
@@ -205,7 +206,7 @@
 
             <section class="block">
               <div class="summary" id="summary"></div>
-              <p class="form-error" id="formError" hidden></p>
+              <p class="form-error" id="formError" role="alert" hidden></p>
               <button type="submit" class="btn btn--acc btn--lg btn--full" id="submitBtn">
                 注文内容を確認する<span class="btn__arrow">→</span>
               </button>
@@ -222,7 +223,7 @@
   <section class="view" id="viewConfirm" hidden>
     <div class="wrap confirm">
       <p class="kicker">STEP 02 / CONFIRM</p>
-      <h1 class="display display--jp">注文内容の<br>確認</h1>
+      <h1 class="display display--jp" tabindex="-1">注文内容の<br>確認</h1>
       <p class="confirm__team" id="cfTeam"></p>
 
       <div class="confirm__body" id="cfBody"></div>
@@ -240,7 +241,7 @@
   <section class="view" id="viewDone" hidden>
     <div class="wrap done">
       <p class="kicker">STEP 03 / COMPLETE</p>
-      <h1 class="display display--xl done__title">Thank<br>you.</h1>
+      <h1 class="display display--xl done__title" tabindex="-1">Thank<br>you.</h1>
       <p class="lead">ご注文ありがとうございます。<br>注文内容を受け付けました。</p>
 
       <dl class="done__meta" id="doneMeta"></dl>

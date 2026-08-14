@@ -12,12 +12,20 @@
   --white:      #FFFFFF;
   --off:        #F5F5F2;
   --off-2:      #EAE9E4;
-  --grey:       #8A8A85;
+  --grey:       #6E6E68;          /* 明るい背景でも 4.5:1 を満たす灰 */
   --acc:        #D8FF00;          /* fluorescent lime */
   --acc-deep:   #B8DA00;
 
   --line-dark:  rgba(255, 255, 255, .16);
   --line-light: rgba(0, 0, 0, .14);
+
+  /* エラー表示 */
+  --danger:      #FF4B3E;         /* 枠線 */
+  --danger-text: #FF6B60;         /* 暗い背景での文字 */
+
+  /* フォーカスリング。ライムは明るい背景だとほぼ見えないので、
+     暗いセクションでだけライムに切り替える。 */
+  --focus: #0B0B0B;
 
   --f-display: "Anton", "Arial Narrow", "Helvetica Neue", Impact, sans-serif;
   --f-sans: "Inter", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -61,11 +69,14 @@ ul, ol { list-style: none; }
 ::selection { background: var(--acc); color: var(--black); }
 
 :focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: 3px;
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
 /* ---------- Themes ---------- */
+.t-dark, .team-body { --focus: var(--acc); }
+.t-light { --focus: #0B0B0B; }
+
 .t-dark  { background: var(--black); color: var(--white); }
 .t-light { background: var(--off);   color: var(--ink); }
 .t-white { background: var(--white); color: var(--ink); }
@@ -441,6 +452,22 @@ ul, ol { list-style: none; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* 本文へスキップ。ふだんは隠れていて、Tab で最初に出てくる。 */
+.skip-link {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 200;
+  transform: translateY(-120%);
+  background: var(--acc);
+  color: var(--black);
+  padding: 14px 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  transition: transform .2s var(--ease);
+}
+.skip-link:focus { transform: none; }
 .stack-8  { display: grid; gap: 8px; }
 .stack-16 { display: grid; gap: 16px; }
 .stack-24 { display: grid; gap: 24px; }

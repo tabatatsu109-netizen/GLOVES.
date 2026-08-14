@@ -79,7 +79,7 @@
   transition: border-color .2s var(--ease);
 }
 .ds-input:focus { outline: none; border-color: var(--acc); background: #111; }
-.ds-input::placeholder { color: rgba(255, 255, 255, .28); }
+.ds-input::placeholder { color: rgba(255, 255, 255, .45); }
 
 .ds-row { display: grid; gap: 14px; }
 @media (min-width: 560px) { .ds-row { grid-template-columns: 1.6fr 1fr; } }

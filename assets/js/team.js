@@ -74,23 +74,30 @@
       box.hidden = false;
       box.classList.add("fig", "team-logo--" + (team.logo.shape || "rect"));
       if (team.logo.ratio) box.style.aspectRatio = team.logo.ratio;
-      box.innerHTML = '<img src="' + team.logo.src + '" alt="' + NOF.escapeHtml(team.teamName) + ' ロゴ">';
+      box.innerHTML = '<img src="' + team.logo.src + '" alt="' + NOF.escapeHtml(team.teamName) + ' ロゴ"' +
+                      ' width="200" height="200" decoding="async">';
       NOF.applyFocal(box, team.logo);
     }
 
     var gallery = (team.gallery && team.gallery.length) ? team.gallery : [team.hero];
     setHeroShot(gallery[0]);
     $("#heroThumbs").innerHTML = gallery.map(function (g, i) {
+      var label = g.alt || ("商品画像 " + (i + 1));
       return '<li><button type="button" class="thumb fig' + (i === 0 ? " is-on" : "") + '" data-shot="' + i + '"' +
              ' style="--px:' + g.px + '%; --py:' + g.py + '%; --z:' + g.z + '"' +
-             ' aria-label="商品画像 ' + (i + 1) + '"><img src="' + g.src + '" alt=""></button></li>';
+             ' aria-label="' + NOF.escapeHtml(label) + 'を表示"' +
+             ' aria-current="' + (i === 0) + '">' +
+             '<img src="' + g.src + '" alt="" width="120" height="120" loading="lazy"></button></li>';
     }).join("");
 
     $("#heroThumbs").addEventListener("click", function (e) {
       var b = e.target.closest("[data-shot]");
       if (!b) return;
-      $$(".thumb", $("#heroThumbs")).forEach(function (t) { t.classList.remove("is-on"); });
-      b.classList.add("is-on");
+      $$(".thumb", $("#heroThumbs")).forEach(function (t) {
+        var on = t === b;
+        t.classList.toggle("is-on", on);
+        t.setAttribute("aria-current", String(on));
+      });
       setHeroShot(gallery[Number(b.dataset.shot)]);
     });
   }
@@ -144,34 +151,40 @@
   /* ---------------------------------------------------------- players --- */
   function playerMarkup(p, i) {
     var no = String(i + 1).padStart(2, "0");
+    var eName = "err-name-" + p.id;
+    var eNum  = "err-num-" + p.id;
+    var eQty  = "err-qty-" + p.id;
     return '' +
     '<article class="player" data-id="' + p.id + '">' +
       '<header class="player__head">' +
-        '<span class="player__no">PLAYER ' + no + '</span>' +
-        (i > 0 ? '<button type="button" class="player__remove" data-remove="' + p.id + '">削除</button>' : '') +
+        '<h3 class="player__no" id="ptitle-' + p.id + '" tabindex="-1">PLAYER ' + no + '</h3>' +
+        (i > 0 ? '<button type="button" class="player__remove" data-remove="' + p.id + '"' +
+                 ' aria-label="PLAYER ' + no + ' を削除">削除</button>' : '') +
       '</header>' +
 
       '<div class="fields fields--2">' +
         '<label class="field">' +
           '<span class="field__label">選手名 <i>必須</i></span>' +
-          '<input type="text" data-f="name" value="' + NOF.escapeHtml(p.name) + '" placeholder="山田 太郎" autocomplete="off">' +
-          '<span class="field__error" data-error></span>' +
+          '<input type="text" data-f="name" value="' + NOF.escapeHtml(p.name) + '" placeholder="山田 太郎" autocomplete="off" aria-describedby="' + eName + '">' +
+          '<span class="field__error" id="' + eName + '" data-error></span>' +
         '</label>' +
         '<label class="field">' +
           '<span class="field__label">背番号 <i>必須</i></span>' +
-          '<input type="text" data-f="number" value="' + NOF.escapeHtml(p.number) + '" placeholder="10" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off">' +
-          '<span class="field__error" data-error></span>' +
+          '<input type="text" data-f="number" value="' + NOF.escapeHtml(p.number) + '" placeholder="10" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" aria-describedby="' + eNum + '">' +
+          '<span class="field__error" id="' + eNum + '" data-error></span>' +
         '</label>' +
       '</div>' +
 
       '<div class="picker">' +
         '<div class="picker__head">' +
-          '<span class="field__label">サイズ <i>必須</i></span>' +
+          '<span class="field__label" id="sizelabel-' + p.id + '">サイズ <i>必須</i></span>' +
           '<button type="button" class="link-btn" data-size-guide>サイズを見る</button>' +
         '</div>' +
-        '<div class="sizebtns" role="group" aria-label="サイズ">' +
+        '<div class="sizebtns" role="group" aria-labelledby="sizelabel-' + p.id + '">' +
           SIZES.map(function (s) {
-            return '<button type="button" class="sizebtn' + (p.size === s.id ? " is-on" : "") + '" data-size="' + s.id + '">' +
+            var on = p.size === s.id;
+            return '<button type="button" class="sizebtn' + (on ? " is-on" : "") + '" data-size="' + s.id + '"' +
+                     ' aria-pressed="' + on + '">' +
                      '<span class="sizebtn__id">' + s.label + '</span>' +
                      '<span class="sizebtn__dim">' + s.height + '×' + s.width + 'cm</span>' +
                    '</button>';
@@ -183,11 +196,11 @@
         '<span class="field__label">数量</span>' +
         '<div class="qty">' +
           '<button type="button" class="qty__btn" data-qty="-1" aria-label="数量を減らす">−</button>' +
-          '<input class="qty__val" type="text" data-f="qty" value="' + p.qty + '" inputmode="numeric" pattern="[0-9]*" aria-label="数量">' +
+          '<input class="qty__val" type="text" data-f="qty" value="' + p.qty + '" inputmode="numeric" pattern="[0-9]*" aria-label="数量" aria-describedby="' + eQty + '">' +
           '<button type="button" class="qty__btn" data-qty="1" aria-label="数量を増やす">＋</button>' +
         '</div>' +
         '<span class="player__sub" data-sub></span>' +
-        '<span class="field__error" data-error></span>' +
+        '<span class="field__error" id="' + eQty + '" data-error></span>' +
       '</div>' +
     '</article>';
   }
@@ -230,8 +243,9 @@
   /* ---------------------------------------------------------- deliver --- */
   function renderDelivery() {
     $("#deliveryChoice").innerHTML = DELIVERY.map(function (d) {
-      return '<button type="button" class="choice__btn' + (state.customer.delivery === d.id ? " is-on" : "") + '" data-delivery="' + d.id + '">' +
-             d.label + '</button>';
+      var on = state.customer.delivery === d.id;
+      return '<button type="button" class="choice__btn' + (on ? " is-on" : "") + '" data-delivery="' + d.id + '"' +
+             ' aria-pressed="' + on + '">' + d.label + '</button>';
     }).join("");
     var cur = DELIVERY.filter(function (d) { return d.id === state.customer.delivery; })[0];
     $("#deliveryNote").textContent = cur ? cur.note : "";
@@ -241,11 +255,15 @@
   /* ------------------------------------------------------- validation --- */
   function clearErrors(root) {
     $$("[data-error]", root).forEach(function (e) { e.textContent = ""; });
-    $$(".is-invalid", root).forEach(function (e) { e.classList.remove("is-invalid"); });
+    $$(".is-invalid", root).forEach(function (e) {
+      e.classList.remove("is-invalid");
+      e.removeAttribute("aria-invalid");
+    });
   }
 
   function setError(input, msg) {
     input.classList.add("is-invalid");
+    input.setAttribute("aria-invalid", "true");
     // .field（ラベル包み）でも .picker（数量など）でもエラー欄を見つけられるように
     var scope = input.closest(".field, .picker") || input.parentElement;
     var box = scope.querySelector("[data-error]");
@@ -303,12 +321,24 @@
    * 表示内容とボタン状態が食い違わないよう、描画もここで行う。
    * URL は書き換えない（#confirm のような値が slug と衝突するため）。
    */
-  function showView(name, push) {
+  var VIEW_TITLES = {
+    store:   function () { return team.teamName + " ｜ " + team.productName + " ｜ NO FOOTBALL"; },
+    confirm: function () { return "注文内容の確認 ｜ " + team.teamName + " ｜ NO FOOTBALL"; },
+    done:    function () { return "ご注文ありがとうございます ｜ " + team.teamName + " ｜ NO FOOTBALL"; }
+  };
+
+  function showView(name, push, initial) {
     if (name === "confirm") { renderConfirm(); resetPlaceOrder(); }
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = k !== name; });
     $("#stickybar").hidden = name !== "store";
     document.body.classList.toggle("has-stickybar", name === "store");
     window.scrollTo({ top: 0, behavior: "auto" });
+    document.title = VIEW_TITLES[name]();
+    // 画面が切り替わったことが分かるよう、見出しへフォーカスを移す
+    if (!initial) {
+      var h = $(VIEWS[name]).querySelector("h1, h2");
+      if (h) h.focus({ preventScroll: true });
+    }
     if (push) history.pushState({ view: name }, "");
   }
 
@@ -472,7 +502,11 @@
       var sizeBtn = e.target.closest("[data-size]");
       if (sizeBtn) {
         p.size = sizeBtn.dataset.size;
-        $$(".sizebtn", card).forEach(function (b) { b.classList.toggle("is-on", b === sizeBtn); });
+        $$(".sizebtn", card).forEach(function (b) {
+          var on = b === sizeBtn;
+          b.classList.toggle("is-on", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
         state.activePlayer = p.id;
         updatePreview();
         return;
@@ -481,7 +515,12 @@
       var qtyBtn = e.target.closest("[data-qty]");
       if (qtyBtn) {
         p.qty = Math.min(99, Math.max(1, (Number(p.qty) || 1) + Number(qtyBtn.dataset.qty)));
-        $('[data-f="qty"]', card).value = p.qty;
+        var qtyEl = $('[data-f="qty"]', card);
+        qtyEl.value = p.qty;
+        qtyEl.classList.remove("is-invalid");
+        qtyEl.removeAttribute("aria-invalid");
+        var eb = card.querySelector(".picker--row [data-error]");
+        if (eb) eb.textContent = "";
         state.activePlayer = p.id;
         updateSubtotals();
         renderSummary();
@@ -491,11 +530,17 @@
 
       var rm = e.target.closest("[data-remove]");
       if (rm) {
+        var idx = state.players.indexOf(p);
         state.players = state.players.filter(function (x) { return x.id !== p.id; });
         if (state.activePlayer === p.id) state.activePlayer = state.players[0].id;
         renderPlayers();
         renderSummary();
         updatePreview();
+        // 削除でフォーカスが body に落ちないよう、隣のカードへ移す
+        var cards = $$("[data-id]", $("#players"));
+        var next = cards[Math.min(idx, cards.length - 1)];
+        var target = next ? $(".player__no", next) : $("#addPlayer");
+        if (target) target.focus({ preventScroll: true });
       }
     });
 
@@ -581,7 +626,7 @@
   renderSummary();
   updatePreview();
   bind();
-  showView("store", false);
+  showView("store", false, true);
   history.replaceState({ view: "store" }, "");
   NOF.initReveal(document);
 })();

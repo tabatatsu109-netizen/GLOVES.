@@ -23,7 +23,8 @@
             '</span>' +
           '</div>' +
           '<div class="fig fig--zoom" style="--px:50%; --py:50%; --z:1.02">' +
-            '<img src="' + s.image + '" alt="' + s.label + 'サイズのフィールドグローブ" loading="lazy">' +
+            '<img src="' + s.image + '" alt="' + s.label + 'サイズのフィールドグローブ"' +
+            ' width="1024" height="1024" loading="lazy" decoding="async">' +
           '</div>' +
           '<p class="note">' + (s.hint || "") + '</p>' +
         '</article>';
