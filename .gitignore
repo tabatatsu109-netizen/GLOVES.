@@ -10,6 +10,17 @@
 /*.png
 /*.pdf
 
+# ORIGINAL PRINT 商品写真の原本(仕入先カタログ画像)。
+# 軽量化済みのものは assets/images/catalog/ にあり、サイト表示はそちらだけを使う。
+/素材/
+
+# カタログ生成スクリプト。仕入価格・掛け率が書かれているので公開リポジトリに含めない
+# （生成物の assets/images/catalog/ と assets/js/print-catalog.js はコミットする）。
+/tools/
+
+# Claude Code のローカル設定（開発用）
+/.claude/
+
 # 開発用の一時ファイル（動作確認ハーネス）
 /_verify.html
 /_probe*.html

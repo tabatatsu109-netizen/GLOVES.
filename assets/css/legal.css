@@ -1,0 +1,78 @@
+/* ==========================================================================
+   NOF — 法務ページ（特定商取引法に基づく表記 / プライバシーポリシー）
+   base.css のトークン・ヘッダー・フッターをそのまま使い、本文だけ読みやすく組む。
+   ========================================================================== */
+
+.legal-header .site-header__in { gap: 18px; }
+.legal-header__label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .6);
+}
+.legal-header__back { margin-left: auto; padding: 11px 16px; font-size: 10.5px; }
+
+.legal {
+  padding-top: calc(var(--head-h) + clamp(40px, 7vw, 96px));
+  padding-bottom: clamp(72px, 10vw, 140px);
+}
+.legal__in { max-width: 880px; margin-inline: auto; }
+.legal__head { margin-bottom: clamp(32px, 5vw, 56px); }
+.legal__head .kicker { margin-bottom: 16px; }
+.legal__title {
+  font-family: var(--f-sans);
+  font-weight: 900;
+  font-size: clamp(24px, 3.6vw, 40px);
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.legal__updated { margin-top: 12px; }
+
+.legal__body > * + * { margin-top: 28px; }
+.legal__body h2 {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  padding-top: 32px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-light);
+}
+.legal__body p { line-height: 2; }
+.legal__body ul, .legal__body ol { display: grid; gap: 8px; padding-left: 1.4em; }
+.legal__body ul { list-style: disc; }
+.legal__body ol { list-style: decimal; }
+.legal__body li { line-height: 1.9; }
+.legal__body a { text-decoration: underline; text-underline-offset: .2em; }
+.legal__body a:hover { color: var(--acc-deep); }
+
+/* 表記の一覧（dl） */
+.legal__table {
+  display: grid;
+  border-top: 1px solid var(--line-light);
+}
+.legal__table > div {
+  display: grid;
+  gap: 4px 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-light);
+}
+.legal__table dt {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: var(--grey);
+}
+.legal__table dd { margin: 0; line-height: 1.9; }
+@media (min-width: 720px) {
+  .legal__table > div { grid-template-columns: 220px 1fr; align-items: start; }
+  .legal__table dt { padding-top: 4px; }
+}
+
+/* 記入待ちの箇所を目立たせる（公開前に必ず置き換える） */
+.todo {
+  background: var(--acc);
+  color: var(--black);
+  font-weight: 800;
+  padding: 1px 6px;
+}

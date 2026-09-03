@@ -1,0 +1,24 @@
+# Vercel にアップロードしないもの（Git 連携・CLI どちらでデプロイしても除外される）
+# .gitignore と二重に書いているのは、CLI デプロイ(vercel --prod)が作業ディレクトリを
+# そのまま送るため。ここに書いたものは https://ドメイン/... で取得できなくなる。
+
+# 内部資料・ビルドスクリプト（仕入価格・掛け率が書かれている）
+README.md
+tools/
+.claude/
+
+# 商品写真の原本・支給素材・価格表
+素材/
+*.pdf
+/*.png
+/*.jpg
+
+# 他ホスティング向けの設定（Vercel では不要）
+.htaccess
+_redirects
+
+# 開発用
+.gitignore
+.vercelignore
+_verify.html
+_probe*.html

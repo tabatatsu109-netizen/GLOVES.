@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デザインシミュレーター ｜ NO FOOTBALL ORIGINAL PRINT</title>
+<meta name="description" content="素材・カラー・プリント位置を選んで、その場で完成イメージと概算金額を確認できるデザインシミュレーターです。">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="website">
+<meta property="og:title" content="デザインシミュレーター ｜ NO FOOTBALL ORIGINAL PRINT">
+<meta property="og:description" content="素材・カラー・プリント位置を選んで、その場で完成イメージと概算金額を。">
+<meta property="og:image" content="../assets/images/print-hoodie-black.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/designer.css">
+<link rel="stylesheet" href="../assets/css/print.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-size='16' font-weight='900' fill='%23D8FF00' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+
+<!-- 背景自動削除用のブラウザ内AI(無料・サーバー不要・CDN配信)。読み込みに失敗しても
+     assets/js/design.js 側で簡易フォールバックに切り替わるためページ全体は壊れない。 -->
+<script type="module">
+  window.NOF_bgRemovalReady = import("https://esm.sh/@imgly/background-removal@1.5.5")
+    .then(function (mod) { return mod.removeBackground; })
+    .catch(function (err) {
+      console.error("背景除去AIの読み込みに失敗しました。簡易処理を使用します。", err);
+      return null;
+    });
+</script>
+</head>
+<body class="t-dark">
+<a class="skip-link" href="#studio">本文へスキップ</a>
+
+<!-- ======================================================= HEADER ======= -->
+<header class="site-header is-stuck">
+  <div class="site-header__in">
+    <a href="../index.html" class="logo">NO FOOTBALL<small>NOF</small></a>
+    <span class="studio-header__label">DESIGN SIMULATOR</span>
+    <a href="index.html" class="btn btn--ghost studio-header__back">ORIGINAL PRINTへ戻る<span class="btn__arrow">→</span></a>
+  </div>
+</header>
+
+<main class="studio" id="studio">
+  <div class="wrap studio__wrap">
+
+    <!-- ---------------------------------------------- preview(常に表示) -- -->
+    <div class="studio__preview">
+      <div class="view-tabs-row" id="pViewsBlock">
+        <div class="ds-group" id="pViews"></div>
+      </div>
+
+      <div class="pz-wrap studio__pz-wrap">
+        <div class="pz" id="pzStage">
+          <img id="pzImg" alt="商品プレビュー">
+          <div class="pz-overlay" id="pzOverlay"></div>
+        </div>
+      </div>
+      <p class="note pz-note" id="pNote" hidden></p>
+      <p class="note pz-note">※ 雰囲気を確認するためのイメージです。実際のプリント位置・サイズは製作時に調整します。</p>
+
+      <div class="pqty-row">
+        <span class="ds-label">数量</span>
+        <div class="pqty" id="pQty">
+          <button type="button" class="pqty__btn" data-pqty="-1" aria-label="数量を減らす">−</button>
+          <input class="pqty__val" id="pQtyVal" type="text" inputmode="numeric" pattern="[0-9]*" value="10" aria-label="数量">
+          <button type="button" class="pqty__btn" data-pqty="1" aria-label="数量を増やす">＋</button>
+        </div>
+      </div>
+      <p class="ptier" id="pTier"></p>
+
+      <div class="psum" id="pSummary"></div>
+
+      <div class="ds-actions">
+        <button type="button" class="btn btn--acc" id="pSave">この画像を保存<span class="btn__arrow">↓</span></button>
+        <span class="ds-status" id="pSaveStatus"></span>
+      </div>
+      <p class="note" style="margin-top:14px">保存した画像を、下のフォームからのお問い合わせ時に担当者へお送りください。</p>
+    </div>
+
+    <!-- ------------------------------------------------------- controls -- -->
+    <div class="studio__controls">
+
+      <details class="step-acc" open>
+        <summary><span class="step-acc__no">①</span>素材を選ぶ</summary>
+        <div class="step-acc__body">
+          <div class="ds-group" id="pTabs"></div>
+        </div>
+      </details>
+
+      <details class="step-acc" open>
+        <summary><span class="step-acc__no">②</span>カラーを選ぶ</summary>
+        <div class="step-acc__body">
+          <div class="ds-group" id="pColors"></div>
+        </div>
+      </details>
+
+      <details class="step-acc" open>
+        <summary><span class="step-acc__no">③</span>NOFロゴを入れる</summary>
+        <div class="step-acc__body">
+          <div class="ds-block">
+            <span class="ds-label">前面(右胸 or 左胸)</span>
+            <div class="ds-group" id="pNofFront"></div>
+            <div id="pNofFrontScale"></div>
+          </div>
+          <div class="ds-block">
+            <span class="ds-label">背面</span>
+            <div class="ds-group" id="pNofBack"></div>
+            <div id="pNofBackScale"></div>
+          </div>
+          <p class="note">生地の色に合わせて白/黒のロゴが自動で切り替わります。プレビュー上でドラッグして位置を調整でき、サイズも少しだけ変更できます。</p>
+        </div>
+      </details>
+
+      <details class="step-acc" open>
+        <summary><span class="step-acc__no">④</span>プリント位置を選ぶ<em>複数選択できます</em></summary>
+        <div class="step-acc__body">
+          <div class="preset-grid" id="pPresetPicker"></div>
+        </div>
+      </details>
+
+      <details class="step-acc" open>
+        <summary><span class="step-acc__no">⑤</span>デザインを配置する</summary>
+        <div class="step-acc__body">
+          <div id="pActiveList"></div>
+        </div>
+      </details>
+
+      <form class="pform" id="pForm">
+        <p class="ds-label" style="margin:0">この内容で見積もりを相談する</p>
+        <label class="pfield">
+          <span>お名前<em>*</em></span>
+          <input type="text" name="name" required autocomplete="name">
+        </label>
+        <label class="pfield">
+          <span>連絡先(電話 or メール)<em>*</em></span>
+          <input type="text" name="contact" required autocomplete="tel email">
+        </label>
+        <label class="pfield">
+          <span>ご要望・チーム名など(任意)</span>
+          <textarea name="memo" rows="2"></textarea>
+        </label>
+        <button type="submit" class="btn btn--acc btn--full submit-btn">この内容で問い合わせる<span class="btn__arrow">→</span></button>
+        <p class="form-status" id="pFormStatus"></p>
+        <p class="note">送信いただいた内容は<a href="../privacy.html" class="plink">プライバシーポリシー</a>に従って取り扱います。</p>
+        <div class="pmail" id="pMailFallback" hidden></div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- ======================================================= FOOTER ======= -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__top">
+      <a href="../index.html" class="logo logo--lg">NO FOOTBALL<small>NOF</small></a>
+      <nav class="site-footer__nav">
+        <a href="index.html">ORIGINAL PRINT</a>
+        <a href="index.html#how">HOW TO ORDER</a>
+        <a href="../index.html#store">GLOVES</a>
+        <a href="../tokusho.html">特定商取引法に基づく表記</a>
+        <a href="../privacy.html">プライバシーポリシー</a>
+      </nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© NO FOOTBALL — ORIGINAL PRINT</span>
+      <span id="pFooterContact"></span>
+    </div>
+  </div>
+</footer>
+
+<div class="pstickybar" id="pStickybar" hidden>
+  <div class="pstickybar__in">
+    <div>
+      <div class="pstickybar__label">概算合計(税込目安)</div>
+      <div class="pstickybar__value" id="pStickyValue">&yen;0</div>
+    </div>
+    <button type="button" class="btn btn--acc pstickybar__btn" id="pStickyBtn">詳細を見る</button>
+  </div>
+</div>
+
+<script src="../assets/js/site-config.js"></script>
+<script src="../assets/js/core.js"></script>
+<script src="../assets/js/print-catalog.js"></script>
+<script src="../assets/js/design.js"></script>
+</body>
+</html>
