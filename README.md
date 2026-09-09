@@ -1,7 +1,7 @@
-# NO FOOTBALL（NOF）— OFFICIAL FIELD GLOVES
+# NO FOOTBALL（NOF）— 公式サイト / フィールドグローブ / オリジナルプリント
 
-サッカーチーム向けオリジナルフィールドグローブの
-**公式LP + チーム専用注文ページ** です。
+フットボールアパレルブランド NO FOOTBALL（NOF）の
+**公式サイト + フィールドグローブLP + チーム専用注文ページ + オリジナルプリント** です。
 
 HTML / CSS / Vanilla JS のみで動作します（ビルド不要）。
 
@@ -11,10 +11,34 @@ HTML / CSS / Vanilla JS のみで動作します（ビルド不要）。
 
 | URL | 内容 |
 |---|---|
-| `/` （`index.html`） | NOF公式LP（フィールドグローブ） |
+| `/` （`index.html`） | **公式サイト トップ**（メインビジュアル / NEWS帯 / 事業カテゴリー / チームオーダー / お知らせ / お問い合わせ） |
+| `/about.html` | ブランド情報（理念・メッセージ・ブランド概要・取り組み） |
+| `/products.html` | NOF ORIGINAL 商品一覧（BASE の商品へリンク） |
+| `/gallery.html` | ギャラリー（アイテム / チームオーダー事例 / Instagram） |
+| `/news.html` | お知らせ一覧 |
+| `/contact.html` | お問い合わせフォーム |
+| `/gloves.html` | フィールドグローブLP（旧 `index.html`） |
 | `/team/<slug>` （`team.html`） | チーム専用販売ページ → 注文フォーム → 確認 → 完了 |
 | `/オリジナルプリント/`（`オリジナルプリント/index.html`） | ORIGINAL PRINT LP（Tシャツ・パーカー等7商品） |
 | `/オリジナルプリント/design.html` | デザインシミュレーター（素材・カラー・プリント位置・見積もり） |
+
+### 公式サイト（`index.html` ほか）の編集ポイント
+
+| 変更したいこと | 触るファイル |
+|---|---|
+| お知らせを追加する | `assets/js/news-data.js` の配列の先頭に1件足す（トップには最新3件、`news.html` には全件） |
+| NOF ORIGINAL の商品を増やす・価格/在庫を直す | `assets/js/shop-items.js` を編集し、画像を `assets/images/hp/items/<id>.jpg`（正方形 640px）に置く |
+| ショップ・Instagram のURL / 問い合わせメール / フォーム送信先 | `assets/js/site-config.js`（`shopUrl` / `instagramUrl` / `contactEmail` / `contactEndpoint`） |
+| ヘッダー・フッターのメニュー | 各 HTML の `<nav class="hp-nav">`（全ページ共通なので同じ内容に揃えてください） |
+| メインビジュアルの写真・コピー | `index.html` の `<section class="mv">`（画像は `assets/images/hp/hero-0X.jpg`） |
+| 事業カテゴリー4枚のカード | `index.html` の `.cat-list`（画像は `assets/images/hp/cat-*.jpg`） |
+| デザイン（色・余白） | `assets/css/hp.css`（公式サイト専用。LP側の `base.css` / `lp.css` とは独立） |
+
+**お問い合わせフォーム**は `contactEndpoint`（Formspree 等のPOST先）が空のままだと送信せず、
+メール（`contactEmail` 設定時）または BASE のお問い合わせフォームを案内します。
+「送信しました」と偽って表示することはありません。
+
+`about.html` と `tokusho.html` の **【要記入】** 箇所（所在地・運営者名・代表者名など）は公開前に埋めてください。
 
 チーム専用ページは 1 ファイル（`team.html`）で、
 URL の slug に応じてチーム名・ロゴ・価格・商品画像が切り替わります。
@@ -35,15 +59,23 @@ URL の slug に応じてチーム名・ロゴ・価格・商品画像が切り�
 ## 2. ディレクトリ
 
 ```
-index.html              NOF公式LP
+index.html              公式サイト トップ
+about.html / products.html / gallery.html / news.html / contact.html
+                        公式サイト 下層ページ
+gloves.html             フィールドグローブLP
 team.html               チーム専用ページ（商品 / 注文 / 確認 / 完了）
 assets/
   css/
+    hp.css              公式サイト専用（ヘッダー / MV / 帯 / カード / 下層ページ）
     base.css            デザイントークン・共通UI・サイズモーダル
     lp.css              LP専用
     designer.css        デザインシミュレーター
     team.css            チーム専用ページ
   js/
+    hp.js               公式サイトの動き（固定ヘッダー / スライダー / お知らせ描画 / フォーム）
+    news-data.js        ★ お知らせデータ
+    shop-items.js       ★ NOF ORIGINAL 商品一覧データ
+    site-config.js      公開用の共通設定（URL・メール・フォーム送信先）
     teams.js            ★ チーム設定（ここだけ触ればチームが増やせます）
     core.js             共通処理（slug解決 / 金額計算 / 注文送信 / ★プリント仕様 NOF.print）
     sizeguide.js        サイズ表モーダル（LP・チームページ共通）
@@ -51,6 +83,7 @@ assets/
     designer.js         デザインシミュレーターの操作
     team.js             注文フォームのロジック
   images/               商品画像・実物写真・サイズ画像（Web用に軽量化したもの）
+  images/hp/            公式サイト用（ロゴ / メインビジュアル / カテゴリー / 商品サムネイル items/）
 _redirects              Netlify / Cloudflare Pages 用 rewrite
 vercel.json             Vercel 用 rewrite
 .htaccess               Apache 用 rewrite
