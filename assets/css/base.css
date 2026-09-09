@@ -9,11 +9,12 @@
   --black:      #000000;
   --ink:        #0B0B0B;
   --white:      #FFFFFF;
-  --off:        #F5F5F2;
-  --off-2:      #EAE9E4;
+  --off:        #F4F4F4;
+  --off-2:      #E4E4E4;
   --grey:       #6E6E68;          /* 明るい背景でも 4.5:1 を満たす灰 */
-  --acc:        #D8FF00;          /* fluorescent lime */
-  --acc-deep:   #B8DA00;
+  --acc:        #000000;          /* 差し色 = ブラック（暗い面では白に反転） */
+  --acc-fg:     #FFFFFF;          /* 差し色の上に乗せる文字色 */
+  --acc-deep:   #444444;
 
   --line-dark:  rgba(255, 255, 255, .16);
   --line-light: rgba(0, 0, 0, .14);
@@ -26,11 +27,11 @@
      暗いセクションでだけライムに切り替える。 */
   --focus: #0B0B0B;
 
-  --f-display: "Anton", "Arial Narrow", "Helvetica Neue", Impact, sans-serif;
-  --f-sans: "Inter", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  --f-display: "Oswald", "Arial Narrow", "Helvetica Neue", Impact, sans-serif;
+  --f-sans: "Noto Sans JP", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
 
-  --head-h: 62px;
+  --head-h: 94px;
   --pad-x: clamp(20px, 5vw, 72px);
   --wrap: 1680px;
 
@@ -65,7 +66,7 @@ button { background: none; border: 0; cursor: pointer; }
 h1, h2, h3, h4, p, figure, ul, ol { margin: 0; padding: 0; }
 ul, ol { list-style: none; }
 
-::selection { background: var(--acc); color: var(--black); }
+::selection { background: var(--acc); color: var(--acc-fg); }
 
 :focus-visible {
   outline: 3px solid var(--focus);
@@ -73,13 +74,13 @@ ul, ol { list-style: none; }
 }
 
 /* ---------- Themes ---------- */
-.t-dark, .team-body { --focus: var(--acc); }
-.t-light { --focus: #0B0B0B; }
+.t-dark, .team-body { --focus: #FFFFFF; --acc: #FFFFFF; --acc-fg: #000000; }
+.t-light { --focus: #0B0B0B; --acc: #000000; --acc-fg: #FFFFFF; }
 
 .t-dark  { background: var(--black); color: var(--white); }
 .t-light { background: var(--off);   color: var(--ink); }
 
-.t-dark  ::selection { background: var(--acc); color: var(--black); }
+.t-dark  ::selection { background: var(--acc); color: var(--acc-fg); }
 
 /* ---------- Layout ---------- */
 .wrap {
@@ -94,10 +95,10 @@ ul, ol { list-style: none; }
 /* ---------- Typography ---------- */
 .display {
   font-family: var(--f-display);
-  font-weight: 400;
+  font-weight: 600;
   text-transform: uppercase;
-  line-height: .86;
-  letter-spacing: -.005em;
+  line-height: .92;
+  letter-spacing: .01em;
   font-size: clamp(44px, 9.4vw, 152px);
 }
 .display--xl { font-size: clamp(54px, 13.5vw, 230px); }
@@ -160,7 +161,7 @@ ul, ol { list-style: none; }
   padding: 18px 30px;
   background: var(--btn-bg);
   color: var(--btn-fg);
-  border-radius: 0;
+  border-radius: 999px;
   font-size: 12.5px;
   font-weight: 800;
   letter-spacing: .14em;
@@ -175,8 +176,8 @@ ul, ol { list-style: none; }
 .btn:hover .btn__arrow { transform: translateX(5px); }
 .btn:active { transform: translateY(0); }
 
-.btn--acc   { --btn-bg: var(--acc); --btn-fg: var(--black); }
-.btn--acc:hover { --btn-bg: #E6FF3D; }
+.btn--acc   { --btn-bg: var(--acc); --btn-fg: var(--acc-fg); }
+.btn--acc:hover { opacity: .82; }
 .btn--lg    { padding: 22px 40px; font-size: 13.5px; }
 .btn--full  { display: flex; width: 100%; }
 
@@ -297,8 +298,8 @@ ul, ol { list-style: none; }
 .marquee {
   overflow: hidden;
   background: var(--acc);
-  color: var(--black);
-  border-block: 1px solid var(--black);
+  color: var(--acc-fg);
+  border-block: 1px solid var(--acc);
   padding-block: 13px;
   display: flex;
   user-select: none;
@@ -396,7 +397,7 @@ ul, ol { list-style: none; }
   text-transform: uppercase;
   transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.team-links__list a:hover { background: var(--acc); color: var(--black); border-color: var(--acc); }
+.team-links__list a:hover { background: var(--acc); color: var(--acc-fg); border-color: var(--acc); }
 .team-links__list a i { font-style: normal; opacity: .5; font-size: 10px; letter-spacing: .06em; }
 .team-links__list a:hover i { opacity: .7; }
 
@@ -430,7 +431,7 @@ ul, ol { list-style: none; }
   padding: 10px 14px; border: 1px solid var(--line-dark);
   transition: background-color .25s var(--ease), color .25s var(--ease);
 }
-.sg__close:hover { background: var(--acc); color: var(--black); border-color: var(--acc); }
+.sg__close:hover { background: var(--acc); color: var(--acc-fg); border-color: var(--acc); }
 .sg__grid { display: grid; gap: 1px; background: var(--line-dark); border: 1px solid var(--line-dark); }
 .sg__item { margin: 0; background: var(--black); padding: 16px; }
 .sg__item .fig { aspect-ratio: 1 / 1; background: #131313; margin-bottom: 12px; }
@@ -458,7 +459,7 @@ ul, ol { list-style: none; }
   z-index: 200;
   transform: translateY(-120%);
   background: var(--acc);
-  color: var(--black);
+  color: var(--acc-fg);
   padding: 14px 20px;
   font-size: 12.5px;
   font-weight: 800;
@@ -479,3 +480,7 @@ ul, ol { list-style: none; }
   .reveal, .reveal-x { opacity: 1; transform: none; }
   .reveal-mask > * { transform: none; }
 }
+
+/* ---------- 公式サイト（hp-shell.css）と組み合わせるときの調整 ----------
+   ヘッダーはページ内に置かれ、スクロールで固定される（body.is-upper）。 */
+.is-upper .hp-header + main, .is-upper .hp-header + .studio { margin-top: var(--hp-header-h, 94px); }

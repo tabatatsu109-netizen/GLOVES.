@@ -104,7 +104,7 @@
   transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
 }
 .ds-font:hover { border-color: rgba(255, 255, 255, .4); }
-.ds-font.is-on { background: var(--acc); color: var(--black); border-color: var(--acc); }
+.ds-font.is-on { background: var(--acc); color: var(--acc-fg); border-color: var(--acc); }
 .ds-font__sample { font-size: 22px; line-height: 1.05; }
 .ds-font__label {
   font-size: 9px;

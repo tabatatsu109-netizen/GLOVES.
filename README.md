@@ -29,10 +29,10 @@ HTML / CSS / Vanilla JS のみで動作します（ビルド不要）。
 | お知らせを追加する | `assets/js/news-data.js` の配列の先頭に1件足す（トップには最新3件、`news.html` には全件） |
 | NOF ORIGINAL の商品を増やす・価格/在庫を直す | `assets/js/shop-items.js` を編集し、画像を `assets/images/hp/items/<id>.jpg`（正方形 640px）に置く |
 | ショップ・Instagram のURL / 問い合わせメール / フォーム送信先 | `assets/js/site-config.js`（`shopUrl` / `instagramUrl` / `contactEmail` / `contactEndpoint`） |
-| ヘッダー・フッターのメニュー | 各 HTML の `<nav class="hp-nav">`（全ページ共通なので同じ内容に揃えてください） |
+| ヘッダー・フッターのメニュー | 各 HTML の `<nav class="hp-nav">`（LP・チームページ・規約ページも含め全ページ共通なので同じ内容に揃えてください） |
 | メインビジュアルの写真・コピー | `index.html` の `<section class="mv">`（画像は `assets/images/hp/hero-0X.jpg`） |
 | 事業カテゴリー4枚のカード | `index.html` の `.cat-list`（画像は `assets/images/hp/cat-*.jpg`） |
-| デザイン（色・余白） | `assets/css/hp.css`（公式サイト専用。LP側の `base.css` / `lp.css` とは独立） |
+| デザイン（色・余白） | 共通ヘッダー/フッター/ボタンは `assets/css/hp-shell.css`、公式サイトのページ内容は `assets/css/hp.css`。LP側（手袋・プリント・チーム）は `base.css` のトークン（`--acc` 黒 / 暗い面では白、`--f-display` Oswald）で公式サイトに揃えている |
 
 **お問い合わせフォーム**は `contactEndpoint`（Formspree 等のPOST先）が空のままだと送信せず、
 メール（`contactEmail` 設定時）または BASE のお問い合わせフォームを案内します。
@@ -66,7 +66,8 @@ gloves.html             フィールドグローブLP
 team.html               チーム専用ページ（商品 / 注文 / 確認 / 完了）
 assets/
   css/
-    hp.css              公式サイト専用（ヘッダー / MV / 帯 / カード / 下層ページ）
+    hp-shell.css        全ページ共通のヘッダー / フッター / ボタン / ページトップ
+    hp.css              公式サイト専用（MV / 帯 / カード / 下層ページ）
     base.css            デザイントークン・共通UI・サイズモーダル
     lp.css              LP専用
     designer.css        デザインシミュレーター

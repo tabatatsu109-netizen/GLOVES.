@@ -15,7 +15,7 @@
   color: var(--acc);
 }
 
-.view { padding-top: var(--head-h); }
+.view { padding-top: 0; }
 .view--center { min-height: 100svh; display: flex; align-items: center; padding-block: 120px 80px; }
 
 /* ------------------------------------------------------------ TEAM HERO -- */
@@ -170,7 +170,7 @@
   font-size: 9.5px;
   font-weight: 800;
   letter-spacing: .16em;
-  color: var(--black);
+  color: var(--acc-fg);
   background: var(--acc);
   padding: 5px 9px;
   white-space: nowrap;
@@ -195,7 +195,7 @@
   letter-spacing: .1em;
   padding: 3px 5px;
   background: var(--acc);
-  color: var(--black);
+  color: var(--acc-fg);
 }
 .field__label i.is-opt { background: rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .8); }
 
@@ -271,7 +271,7 @@
 .sizebtn__id { font-family: var(--f-display); font-size: 24px; line-height: 1; }
 .sizebtn__dim { font-size: 9.5px; letter-spacing: .04em; color: rgba(255, 255, 255, .5); }
 .sizebtn:hover { border-color: rgba(255, 255, 255, .4); }
-.sizebtn.is-on { background: var(--acc); color: var(--black); border-color: var(--acc); }
+.sizebtn.is-on { background: var(--acc); color: var(--acc-fg); border-color: var(--acc); }
 .sizebtn.is-on .sizebtn__dim { color: rgba(0, 0, 0, .62); }
 
 .qty { display: inline-flex; align-items: stretch; border: 1px solid var(--line-dark); }
@@ -282,7 +282,7 @@
   color: var(--white);
   transition: background-color .2s var(--ease), color .2s var(--ease);
 }
-.qty__btn:hover { background: var(--acc); color: var(--black); }
+.qty__btn:hover { background: var(--acc); color: var(--acc-fg); }
 .qty__val {
   width: 54px;
   text-align: center;
@@ -313,7 +313,7 @@
   gap: 10px;
   transition: border-color .25s var(--ease), color .25s var(--ease), background-color .25s var(--ease);
 }
-.add-player:hover { border-color: var(--acc); color: var(--acc); background: rgba(216, 255, 0, .05); }
+.add-player:hover { border-color: var(--acc); color: var(--acc); background: rgba(255, 255, 255, .05); }
 .add-player__plus { font-size: 16px; }
 
 /* delivery choice */

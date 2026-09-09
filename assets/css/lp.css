@@ -6,7 +6,7 @@
 /* モバイル: 上に商品写真、下にコピー。デスクトップ: 全面写真 + 左寄せコピー。 */
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: calc(100svh - 94px);
   display: grid;
   grid-template-rows: minmax(0, 52svh) auto;
   align-content: start;
@@ -69,7 +69,7 @@
       rgba(245, 245, 242, .30) 62%,
       rgba(245, 245, 242, 0) 74%);
   }
-  .hero__in { padding-block: var(--head-h) 0; max-width: min(var(--wrap), 100%); }
+  .hero__in { padding-block: 40px 0; max-width: min(var(--wrap), 100%); }
   .hero__sub { max-width: 24em; }
   .hero__scroll { display: block; }
 }
@@ -366,7 +366,7 @@
 .chat__bubble {
   position: relative;
   background: var(--acc);
-  color: var(--black);
+  color: var(--acc-fg);
   padding: 14px 18px 12px;
   font-size: 13px;
   line-height: 1.6;
@@ -438,7 +438,7 @@
 .phone__sizes .is-on { background: var(--white); color: var(--black); border-color: var(--white); }
 .phone__cta {
   background: var(--acc);
-  color: var(--black);
+  color: var(--acc-fg);
   text-align: center;
   padding: 13px;
   font-size: 11.5px;

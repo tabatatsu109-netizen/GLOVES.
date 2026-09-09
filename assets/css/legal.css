@@ -14,7 +14,7 @@
 .legal-header__back { margin-left: auto; padding: 11px 16px; font-size: 10.5px; }
 
 .legal {
-  padding-top: calc(var(--head-h) + clamp(40px, 7vw, 96px));
+  padding-top: clamp(40px, 7vw, 96px);
   padding-bottom: clamp(72px, 10vw, 140px);
 }
 .legal__in { max-width: 880px; margin-inline: auto; }
@@ -72,7 +72,7 @@
 /* 記入待ちの箇所を目立たせる（公開前に必ず置き換える） */
 .todo {
   background: var(--acc);
-  color: var(--black);
+  color: var(--acc-fg);
   font-weight: 800;
   padding: 1px 6px;
 }
